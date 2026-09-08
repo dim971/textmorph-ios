@@ -1,6 +1,2312 @@
 {
  "torphVersion": "0.1.3",
  "nodeUnicodeVersion": "17.0",
+ "segmentText": [
+  {
+   "value": "",
+   "numbers": true,
+   "diverges": null,
+   "segments": []
+  },
+  {
+   "value": "",
+   "numbers": false,
+   "diverges": null,
+   "segments": []
+  },
+  {
+   "value": "a",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    }
+   ]
+  },
+  {
+   "value": "a",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    }
+   ]
+  },
+  {
+   "value": "balance",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "b",
+     "string": "b"
+    },
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": "l",
+     "string": "l"
+    },
+    {
+     "id": "a-3",
+     "string": "a"
+    },
+    {
+     "id": "n",
+     "string": "n"
+    },
+    {
+     "id": "c",
+     "string": "c"
+    },
+    {
+     "id": "e",
+     "string": "e"
+    }
+   ]
+  },
+  {
+   "value": "balance",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "b",
+     "string": "b"
+    },
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": "l",
+     "string": "l"
+    },
+    {
+     "id": "a-3",
+     "string": "a"
+    },
+    {
+     "id": "n",
+     "string": "n"
+    },
+    {
+     "id": "c",
+     "string": "c"
+    },
+    {
+     "id": "e",
+     "string": "e"
+    }
+   ]
+  },
+  {
+   "value": "Hello world",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "Hello",
+     "string": "Hello"
+    },
+    {
+     "id": "space-5",
+     "string": " "
+    },
+    {
+     "id": "world",
+     "string": "world"
+    }
+   ]
+  },
+  {
+   "value": "Hello world",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "Hello",
+     "string": "Hello"
+    },
+    {
+     "id": "space-5",
+     "string": " "
+    },
+    {
+     "id": "world",
+     "string": "world"
+    }
+   ]
+  },
+  {
+   "value": "Hello, world!",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "Hello",
+     "string": "Hello"
+    },
+    {
+     "id": ",",
+     "string": ","
+    },
+    {
+     "id": "space-6",
+     "string": " "
+    },
+    {
+     "id": "world",
+     "string": "world"
+    },
+    {
+     "id": "!",
+     "string": "!"
+    }
+   ]
+  },
+  {
+   "value": "Hello, world!",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "Hello",
+     "string": "Hello"
+    },
+    {
+     "id": ",",
+     "string": ","
+    },
+    {
+     "id": "space-6",
+     "string": " "
+    },
+    {
+     "id": "world",
+     "string": "world"
+    },
+    {
+     "id": "!",
+     "string": "!"
+    }
+   ]
+  },
+  {
+   "value": "the quick brown fox",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "the",
+     "string": "the"
+    },
+    {
+     "id": "space-3",
+     "string": " "
+    },
+    {
+     "id": "quick",
+     "string": "quick"
+    },
+    {
+     "id": "space-9",
+     "string": " "
+    },
+    {
+     "id": "brown",
+     "string": "brown"
+    },
+    {
+     "id": "space-15",
+     "string": " "
+    },
+    {
+     "id": "fox",
+     "string": "fox"
+    }
+   ]
+  },
+  {
+   "value": "the quick brown fox",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "the",
+     "string": "the"
+    },
+    {
+     "id": "space-3",
+     "string": " "
+    },
+    {
+     "id": "quick",
+     "string": "quick"
+    },
+    {
+     "id": "space-9",
+     "string": " "
+    },
+    {
+     "id": "brown",
+     "string": "brown"
+    },
+    {
+     "id": "space-15",
+     "string": " "
+    },
+    {
+     "id": "fox",
+     "string": "fox"
+    }
+   ]
+  },
+  {
+   "value": "a b c",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": "space-1",
+     "string": " "
+    },
+    {
+     "id": "b",
+     "string": "b"
+    },
+    {
+     "id": "space-3",
+     "string": " "
+    },
+    {
+     "id": "c",
+     "string": "c"
+    }
+   ]
+  },
+  {
+   "value": "a b c",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": "space-1",
+     "string": " "
+    },
+    {
+     "id": "b",
+     "string": "b"
+    },
+    {
+     "id": "space-3",
+     "string": " "
+    },
+    {
+     "id": "c",
+     "string": "c"
+    }
+   ]
+  },
+  {
+   "value": "hello  double",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "hello",
+     "string": "hello"
+    },
+    {
+     "id": "  ",
+     "string": "  "
+    },
+    {
+     "id": "double",
+     "string": "double"
+    }
+   ]
+  },
+  {
+   "value": "hello  double",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "hello",
+     "string": "hello"
+    },
+    {
+     "id": "  ",
+     "string": "  "
+    },
+    {
+     "id": "double",
+     "string": "double"
+    }
+   ]
+  },
+  {
+   "value": " lead",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "space-0",
+     "string": " "
+    },
+    {
+     "id": "lead",
+     "string": "lead"
+    }
+   ]
+  },
+  {
+   "value": " lead",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "space-0",
+     "string": " "
+    },
+    {
+     "id": "lead",
+     "string": "lead"
+    }
+   ]
+  },
+  {
+   "value": "trail ",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "trail",
+     "string": "trail"
+    },
+    {
+     "id": "space-5",
+     "string": " "
+    }
+   ]
+  },
+  {
+   "value": "trail ",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "trail",
+     "string": "trail"
+    },
+    {
+     "id": "space-5",
+     "string": " "
+    }
+   ]
+  },
+  {
+   "value": "  both  ",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "  ",
+     "string": "  "
+    },
+    {
+     "id": "both",
+     "string": "both"
+    },
+    {
+     "id": "  -6",
+     "string": "  "
+    }
+   ]
+  },
+  {
+   "value": "  both  ",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "  ",
+     "string": "  "
+    },
+    {
+     "id": "both",
+     "string": "both"
+    },
+    {
+     "id": "  -6",
+     "string": "  "
+    }
+   ]
+  },
+  {
+   "value": "a\tb",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": "\t",
+     "string": "\t"
+    },
+    {
+     "id": "b",
+     "string": "b"
+    }
+   ]
+  },
+  {
+   "value": "a\tb",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": "\t",
+     "string": "\t"
+    },
+    {
+     "id": "b",
+     "string": "b"
+    }
+   ]
+  },
+  {
+   "value": "a...b",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": ".",
+     "string": "."
+    },
+    {
+     "id": ".-2",
+     "string": "."
+    },
+    {
+     "id": ".-3",
+     "string": "."
+    },
+    {
+     "id": "b",
+     "string": "b"
+    }
+   ]
+  },
+  {
+   "value": "a...b",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": ".",
+     "string": "."
+    },
+    {
+     "id": ".-2",
+     "string": "."
+    },
+    {
+     "id": ".-3",
+     "string": "."
+    },
+    {
+     "id": "b",
+     "string": "b"
+    }
+   ]
+  },
+  {
+   "value": "C++",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "C",
+     "string": "C"
+    },
+    {
+     "id": "+",
+     "string": "+"
+    },
+    {
+     "id": "+-2",
+     "string": "+"
+    }
+   ]
+  },
+  {
+   "value": "C++",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "C",
+     "string": "C"
+    },
+    {
+     "id": "+",
+     "string": "+"
+    },
+    {
+     "id": "+-2",
+     "string": "+"
+    }
+   ]
+  },
+  {
+   "value": "don't",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "d",
+     "string": "d"
+    },
+    {
+     "id": "o",
+     "string": "o"
+    },
+    {
+     "id": "n",
+     "string": "n"
+    },
+    {
+     "id": "'",
+     "string": "'"
+    },
+    {
+     "id": "t",
+     "string": "t"
+    }
+   ]
+  },
+  {
+   "value": "don't",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "d",
+     "string": "d"
+    },
+    {
+     "id": "o",
+     "string": "o"
+    },
+    {
+     "id": "n",
+     "string": "n"
+    },
+    {
+     "id": "'",
+     "string": "'"
+    },
+    {
+     "id": "t",
+     "string": "t"
+    }
+   ]
+  },
+  {
+   "value": "e.g",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "e",
+     "string": "e"
+    },
+    {
+     "id": ".",
+     "string": "."
+    },
+    {
+     "id": "g",
+     "string": "g"
+    }
+   ]
+  },
+  {
+   "value": "e.g",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "e",
+     "string": "e"
+    },
+    {
+     "id": ".",
+     "string": "."
+    },
+    {
+     "id": "g",
+     "string": "g"
+    }
+   ]
+  },
+  {
+   "value": "COVID-19",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "C",
+     "string": "C"
+    },
+    {
+     "id": "O",
+     "string": "O"
+    },
+    {
+     "id": "V",
+     "string": "V"
+    },
+    {
+     "id": "I",
+     "string": "I"
+    },
+    {
+     "id": "D",
+     "string": "D"
+    },
+    {
+     "id": "-",
+     "string": "-"
+    },
+    {
+     "id": "1",
+     "string": "1"
+    },
+    {
+     "id": "9",
+     "string": "9"
+    }
+   ]
+  },
+  {
+   "value": "COVID-19",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "C",
+     "string": "C"
+    },
+    {
+     "id": "O",
+     "string": "O"
+    },
+    {
+     "id": "V",
+     "string": "V"
+    },
+    {
+     "id": "I",
+     "string": "I"
+    },
+    {
+     "id": "D",
+     "string": "D"
+    },
+    {
+     "id": "-",
+     "string": "-"
+    },
+    {
+     "id": "1",
+     "string": "1"
+    },
+    {
+     "id": "9",
+     "string": "9"
+    }
+   ]
+  },
+  {
+   "value": "2024-01-01",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "2",
+     "string": "2"
+    },
+    {
+     "id": "0",
+     "string": "0"
+    },
+    {
+     "id": "2-2",
+     "string": "2"
+    },
+    {
+     "id": "4",
+     "string": "4"
+    },
+    {
+     "id": "-",
+     "string": "-"
+    },
+    {
+     "id": "0-5",
+     "string": "0"
+    },
+    {
+     "id": "1",
+     "string": "1"
+    },
+    {
+     "id": "--7",
+     "string": "-"
+    },
+    {
+     "id": "0-8",
+     "string": "0"
+    },
+    {
+     "id": "1-9",
+     "string": "1"
+    }
+   ]
+  },
+  {
+   "value": "2024-01-01",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "2",
+     "string": "2"
+    },
+    {
+     "id": "0",
+     "string": "0"
+    },
+    {
+     "id": "2-2",
+     "string": "2"
+    },
+    {
+     "id": "4",
+     "string": "4"
+    },
+    {
+     "id": "-",
+     "string": "-"
+    },
+    {
+     "id": "0-5",
+     "string": "0"
+    },
+    {
+     "id": "1",
+     "string": "1"
+    },
+    {
+     "id": "--7",
+     "string": "-"
+    },
+    {
+     "id": "0-8",
+     "string": "0"
+    },
+    {
+     "id": "1-9",
+     "string": "1"
+    }
+   ]
+  },
+  {
+   "value": "3.5 km/h",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "#0",
+     "string": "3",
+     "kind": "digit"
+    },
+    {
+     "id": "#1",
+     "string": ".",
+     "kind": "symbol"
+    },
+    {
+     "id": "#2",
+     "string": "5",
+     "kind": "digit"
+    },
+    {
+     "id": "space-3",
+     "string": " "
+    },
+    {
+     "id": "km",
+     "string": "km"
+    },
+    {
+     "id": "/",
+     "string": "/"
+    },
+    {
+     "id": "h",
+     "string": "h"
+    }
+   ]
+  },
+  {
+   "value": "3.5 km/h",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "3.5",
+     "string": "3.5"
+    },
+    {
+     "id": "space-3",
+     "string": " "
+    },
+    {
+     "id": "km",
+     "string": "km"
+    },
+    {
+     "id": "/",
+     "string": "/"
+    },
+    {
+     "id": "h",
+     "string": "h"
+    }
+   ]
+  },
+  {
+   "value": "1,234.56",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "#0",
+     "string": "1",
+     "kind": "digit"
+    },
+    {
+     "id": "#1",
+     "string": ",",
+     "kind": "symbol"
+    },
+    {
+     "id": "#2",
+     "string": "2",
+     "kind": "digit"
+    },
+    {
+     "id": "#3",
+     "string": "3",
+     "kind": "digit"
+    },
+    {
+     "id": "#4",
+     "string": "4",
+     "kind": "digit"
+    },
+    {
+     "id": "#5",
+     "string": ".",
+     "kind": "symbol"
+    },
+    {
+     "id": "#6",
+     "string": "5",
+     "kind": "digit"
+    },
+    {
+     "id": "#7",
+     "string": "6",
+     "kind": "digit"
+    }
+   ]
+  },
+  {
+   "value": "1,234.56",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "1",
+     "string": "1"
+    },
+    {
+     "id": ",",
+     "string": ","
+    },
+    {
+     "id": "2",
+     "string": "2"
+    },
+    {
+     "id": "3",
+     "string": "3"
+    },
+    {
+     "id": "4",
+     "string": "4"
+    },
+    {
+     "id": ".",
+     "string": "."
+    },
+    {
+     "id": "5",
+     "string": "5"
+    },
+    {
+     "id": "6",
+     "string": "6"
+    }
+   ]
+  },
+  {
+   "value": "$1,234.56",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "#0",
+     "string": "$",
+     "kind": "symbol"
+    },
+    {
+     "id": "#1",
+     "string": "1",
+     "kind": "digit"
+    },
+    {
+     "id": "#2",
+     "string": ",",
+     "kind": "symbol"
+    },
+    {
+     "id": "#3",
+     "string": "2",
+     "kind": "digit"
+    },
+    {
+     "id": "#4",
+     "string": "3",
+     "kind": "digit"
+    },
+    {
+     "id": "#5",
+     "string": "4",
+     "kind": "digit"
+    },
+    {
+     "id": "#6",
+     "string": ".",
+     "kind": "symbol"
+    },
+    {
+     "id": "#7",
+     "string": "5",
+     "kind": "digit"
+    },
+    {
+     "id": "#8",
+     "string": "6",
+     "kind": "digit"
+    }
+   ]
+  },
+  {
+   "value": "$1,234.56",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "$",
+     "string": "$"
+    },
+    {
+     "id": "1",
+     "string": "1"
+    },
+    {
+     "id": ",",
+     "string": ","
+    },
+    {
+     "id": "2",
+     "string": "2"
+    },
+    {
+     "id": "3",
+     "string": "3"
+    },
+    {
+     "id": "4",
+     "string": "4"
+    },
+    {
+     "id": ".",
+     "string": "."
+    },
+    {
+     "id": "5",
+     "string": "5"
+    },
+    {
+     "id": "6",
+     "string": "6"
+    }
+   ]
+  },
+  {
+   "value": "Total $1,204 today",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "Total",
+     "string": "Total"
+    },
+    {
+     "id": "space-5",
+     "string": " "
+    },
+    {
+     "id": "#0",
+     "string": "$",
+     "kind": "symbol"
+    },
+    {
+     "id": "#1",
+     "string": "1",
+     "kind": "digit"
+    },
+    {
+     "id": "#2",
+     "string": ",",
+     "kind": "symbol"
+    },
+    {
+     "id": "#3",
+     "string": "2",
+     "kind": "digit"
+    },
+    {
+     "id": "#4",
+     "string": "0",
+     "kind": "digit"
+    },
+    {
+     "id": "#5",
+     "string": "4",
+     "kind": "digit"
+    },
+    {
+     "id": "space-12",
+     "string": " "
+    },
+    {
+     "id": "today",
+     "string": "today"
+    }
+   ]
+  },
+  {
+   "value": "Total $1,204 today",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "Total",
+     "string": "Total"
+    },
+    {
+     "id": "space-5",
+     "string": " "
+    },
+    {
+     "id": "$",
+     "string": "$"
+    },
+    {
+     "id": "1,204",
+     "string": "1,204"
+    },
+    {
+     "id": "space-12",
+     "string": " "
+    },
+    {
+     "id": "today",
+     "string": "today"
+    }
+   ]
+  },
+  {
+   "value": "12% of 1,000",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "#0",
+     "string": "1",
+     "kind": "digit"
+    },
+    {
+     "id": "#1",
+     "string": "2",
+     "kind": "digit"
+    },
+    {
+     "id": "#2",
+     "string": "%",
+     "kind": "symbol"
+    },
+    {
+     "id": "space-3",
+     "string": " "
+    },
+    {
+     "id": "of",
+     "string": "of"
+    },
+    {
+     "id": "space-6",
+     "string": " "
+    },
+    {
+     "id": "#3",
+     "string": "1",
+     "kind": "digit"
+    },
+    {
+     "id": "#4",
+     "string": ",",
+     "kind": "symbol"
+    },
+    {
+     "id": "#5",
+     "string": "0",
+     "kind": "digit"
+    },
+    {
+     "id": "#6",
+     "string": "0",
+     "kind": "digit"
+    },
+    {
+     "id": "#7",
+     "string": "0",
+     "kind": "digit"
+    }
+   ]
+  },
+  {
+   "value": "12% of 1,000",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "12",
+     "string": "12"
+    },
+    {
+     "id": "%",
+     "string": "%"
+    },
+    {
+     "id": "space-3",
+     "string": " "
+    },
+    {
+     "id": "of",
+     "string": "of"
+    },
+    {
+     "id": "space-6",
+     "string": " "
+    },
+    {
+     "id": "1,000",
+     "string": "1,000"
+    }
+   ]
+  },
+  {
+   "value": "a\nb",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": "newline-1",
+     "string": "\n"
+    },
+    {
+     "id": "b",
+     "string": "b"
+    }
+   ]
+  },
+  {
+   "value": "a\nb",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": "newline-1",
+     "string": "\n"
+    },
+    {
+     "id": "b",
+     "string": "b"
+    }
+   ]
+  },
+  {
+   "value": "a\nb\nc",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": "newline-1",
+     "string": "\n"
+    },
+    {
+     "id": "b",
+     "string": "b"
+    },
+    {
+     "id": "newline-3",
+     "string": "\n"
+    },
+    {
+     "id": "c",
+     "string": "c"
+    }
+   ]
+  },
+  {
+   "value": "a\nb\nc",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": "newline-1",
+     "string": "\n"
+    },
+    {
+     "id": "b",
+     "string": "b"
+    },
+    {
+     "id": "newline-3",
+     "string": "\n"
+    },
+    {
+     "id": "c",
+     "string": "c"
+    }
+   ]
+  },
+  {
+   "value": "one two\nthree four",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "one",
+     "string": "one"
+    },
+    {
+     "id": "space-3",
+     "string": " "
+    },
+    {
+     "id": "two",
+     "string": "two"
+    },
+    {
+     "id": "newline-7",
+     "string": "\n"
+    },
+    {
+     "id": "three",
+     "string": "three"
+    },
+    {
+     "id": "space-13",
+     "string": " "
+    },
+    {
+     "id": "four",
+     "string": "four"
+    }
+   ]
+  },
+  {
+   "value": "one two\nthree four",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "one",
+     "string": "one"
+    },
+    {
+     "id": "space-3",
+     "string": " "
+    },
+    {
+     "id": "two",
+     "string": "two"
+    },
+    {
+     "id": "newline-7",
+     "string": "\n"
+    },
+    {
+     "id": "three",
+     "string": "three"
+    },
+    {
+     "id": "space-13",
+     "string": " "
+    },
+    {
+     "id": "four",
+     "string": "four"
+    }
+   ]
+  },
+  {
+   "value": "\n",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "newline-0",
+     "string": "\n"
+    }
+   ]
+  },
+  {
+   "value": "\n",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "newline-0",
+     "string": "\n"
+    }
+   ]
+  },
+  {
+   "value": "a\n",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": "newline-1",
+     "string": "\n"
+    }
+   ]
+  },
+  {
+   "value": "a\n",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": "newline-1",
+     "string": "\n"
+    }
+   ]
+  },
+  {
+   "value": "\na",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "newline-0",
+     "string": "\n"
+    },
+    {
+     "id": "a",
+     "string": "a"
+    }
+   ]
+  },
+  {
+   "value": "\na",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "newline-0",
+     "string": "\n"
+    },
+    {
+     "id": "a",
+     "string": "a"
+    }
+   ]
+  },
+  {
+   "value": "a\n\nb",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": "newline-1",
+     "string": "\n"
+    },
+    {
+     "id": "newline-2",
+     "string": "\n"
+    },
+    {
+     "id": "b",
+     "string": "b"
+    }
+   ]
+  },
+  {
+   "value": "a\n\nb",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": "newline-1",
+     "string": "\n"
+    },
+    {
+     "id": "newline-2",
+     "string": "\n"
+    },
+    {
+     "id": "b",
+     "string": "b"
+    }
+   ]
+  },
+  {
+   "value": "aa",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": "a-1",
+     "string": "a"
+    }
+   ]
+  },
+  {
+   "value": "aa",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": "a-1",
+     "string": "a"
+    }
+   ]
+  },
+  {
+   "value": "aaa",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": "a-1",
+     "string": "a"
+    },
+    {
+     "id": "a-2",
+     "string": "a"
+    }
+   ]
+  },
+  {
+   "value": "aaa",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": "a-1",
+     "string": "a"
+    },
+    {
+     "id": "a-2",
+     "string": "a"
+    }
+   ]
+  },
+  {
+   "value": "aba",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": "b",
+     "string": "b"
+    },
+    {
+     "id": "a-2",
+     "string": "a"
+    }
+   ]
+  },
+  {
+   "value": "aba",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": "b",
+     "string": "b"
+    },
+    {
+     "id": "a-2",
+     "string": "a"
+    }
+   ]
+  },
+  {
+   "value": "a a",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": "space-1",
+     "string": " "
+    },
+    {
+     "id": "a-2",
+     "string": "a"
+    }
+   ]
+  },
+  {
+   "value": "a a",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": "space-1",
+     "string": " "
+    },
+    {
+     "id": "a-2",
+     "string": "a"
+    }
+   ]
+  },
+  {
+   "value": "a a a",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": "space-1",
+     "string": " "
+    },
+    {
+     "id": "a-2",
+     "string": "a"
+    },
+    {
+     "id": "space-3",
+     "string": " "
+    },
+    {
+     "id": "a-4",
+     "string": "a"
+    }
+   ]
+  },
+  {
+   "value": "a a a",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "a",
+     "string": "a"
+    },
+    {
+     "id": "space-1",
+     "string": " "
+    },
+    {
+     "id": "a-2",
+     "string": "a"
+    },
+    {
+     "id": "space-3",
+     "string": " "
+    },
+    {
+     "id": "a-4",
+     "string": "a"
+    }
+   ]
+  },
+  {
+   "value": "the the the",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "the",
+     "string": "the"
+    },
+    {
+     "id": "space-3",
+     "string": " "
+    },
+    {
+     "id": "the-4",
+     "string": "the"
+    },
+    {
+     "id": "space-7",
+     "string": " "
+    },
+    {
+     "id": "the-8",
+     "string": "the"
+    }
+   ]
+  },
+  {
+   "value": "the the the",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "the",
+     "string": "the"
+    },
+    {
+     "id": "space-3",
+     "string": " "
+    },
+    {
+     "id": "the-4",
+     "string": "the"
+    },
+    {
+     "id": "space-7",
+     "string": " "
+    },
+    {
+     "id": "the-8",
+     "string": "the"
+    }
+   ]
+  },
+  {
+   "value": "é",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "é",
+     "string": "é"
+    }
+   ]
+  },
+  {
+   "value": "é",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "é",
+     "string": "é"
+    }
+   ]
+  },
+  {
+   "value": "café au lait",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "café",
+     "string": "café"
+    },
+    {
+     "id": "space-5",
+     "string": " "
+    },
+    {
+     "id": "au",
+     "string": "au"
+    },
+    {
+     "id": "space-8",
+     "string": " "
+    },
+    {
+     "id": "lait",
+     "string": "lait"
+    }
+   ]
+  },
+  {
+   "value": "café au lait",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "café",
+     "string": "café"
+    },
+    {
+     "id": "space-5",
+     "string": " "
+    },
+    {
+     "id": "au",
+     "string": "au"
+    },
+    {
+     "id": "space-8",
+     "string": " "
+    },
+    {
+     "id": "lait",
+     "string": "lait"
+    }
+   ]
+  },
+  {
+   "value": "😀",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "😀",
+     "string": "😀"
+    }
+   ]
+  },
+  {
+   "value": "😀",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "😀",
+     "string": "😀"
+    }
+   ]
+  },
+  {
+   "value": "😀😁",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "😀",
+     "string": "😀"
+    },
+    {
+     "id": "😁",
+     "string": "😁"
+    }
+   ]
+  },
+  {
+   "value": "😀😁",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "😀",
+     "string": "😀"
+    },
+    {
+     "id": "😁",
+     "string": "😁"
+    }
+   ]
+  },
+  {
+   "value": "🇫🇷🇩🇪",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "🇫🇷",
+     "string": "🇫🇷"
+    },
+    {
+     "id": "🇩🇪",
+     "string": "🇩🇪"
+    }
+   ]
+  },
+  {
+   "value": "🇫🇷🇩🇪",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "🇫🇷",
+     "string": "🇫🇷"
+    },
+    {
+     "id": "🇩🇪",
+     "string": "🇩🇪"
+    }
+   ]
+  },
+  {
+   "value": "👨‍👩‍👧",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "👨‍👩‍👧",
+     "string": "👨‍👩‍👧"
+    }
+   ]
+  },
+  {
+   "value": "👨‍👩‍👧",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "👨‍👩‍👧",
+     "string": "👨‍👩‍👧"
+    }
+   ]
+  },
+  {
+   "value": "hi 😀 there",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "hi",
+     "string": "hi"
+    },
+    {
+     "id": "space-2",
+     "string": " "
+    },
+    {
+     "id": "😀",
+     "string": "😀"
+    },
+    {
+     "id": "space-5",
+     "string": " "
+    },
+    {
+     "id": "there",
+     "string": "there"
+    }
+   ]
+  },
+  {
+   "value": "hi 😀 there",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "hi",
+     "string": "hi"
+    },
+    {
+     "id": "space-2",
+     "string": " "
+    },
+    {
+     "id": "😀",
+     "string": "😀"
+    },
+    {
+     "id": "space-5",
+     "string": " "
+    },
+    {
+     "id": "there",
+     "string": "there"
+    }
+   ]
+  },
+  {
+   "value": "क्ष",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "क्ष",
+     "string": "क्ष"
+    }
+   ]
+  },
+  {
+   "value": "क्ष",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "क्ष",
+     "string": "क्ष"
+    }
+   ]
+  },
+  {
+   "value": "ไทย",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "ไ",
+     "string": "ไ"
+    },
+    {
+     "id": "ท",
+     "string": "ท"
+    },
+    {
+     "id": "ย",
+     "string": "ย"
+    }
+   ]
+  },
+  {
+   "value": "ไทย",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "ไ",
+     "string": "ไ"
+    },
+    {
+     "id": "ท",
+     "string": "ท"
+    },
+    {
+     "id": "ย",
+     "string": "ย"
+    }
+   ]
+  },
+  {
+   "value": "שלום",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "ש",
+     "string": "ש"
+    },
+    {
+     "id": "ל",
+     "string": "ל"
+    },
+    {
+     "id": "ו",
+     "string": "ו"
+    },
+    {
+     "id": "ם",
+     "string": "ם"
+    }
+   ]
+  },
+  {
+   "value": "שלום",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "ש",
+     "string": "ש"
+    },
+    {
+     "id": "ל",
+     "string": "ל"
+    },
+    {
+     "id": "ו",
+     "string": "ו"
+    },
+    {
+     "id": "ם",
+     "string": "ם"
+    }
+   ]
+  },
+  {
+   "value": "مرحبا بك",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "مرحبا",
+     "string": "مرحبا"
+    },
+    {
+     "id": "space-5",
+     "string": " "
+    },
+    {
+     "id": "بك",
+     "string": "بك"
+    }
+   ]
+  },
+  {
+   "value": "مرحبا بك",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "مرحبا",
+     "string": "مرحبا"
+    },
+    {
+     "id": "space-5",
+     "string": " "
+    },
+    {
+     "id": "بك",
+     "string": "بك"
+    }
+   ]
+  },
+  {
+   "value": "日本語",
+   "numbers": true,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "日",
+     "string": "日"
+    },
+    {
+     "id": "本",
+     "string": "本"
+    },
+    {
+     "id": "語",
+     "string": "語"
+    }
+   ]
+  },
+  {
+   "value": "日本語",
+   "numbers": false,
+   "diverges": null,
+   "segments": [
+    {
+     "id": "日",
+     "string": "日"
+    },
+    {
+     "id": "本",
+     "string": "本"
+    },
+    {
+     "id": "語",
+     "string": "語"
+    }
+   ]
+  },
+  {
+   "value": "日本語 です",
+   "numbers": true,
+   "diverges": "ICU joins a CJK letter run into one word; UAX #29 without dictionary breaking does not",
+   "segments": [
+    {
+     "id": "日本語",
+     "string": "日本語"
+    },
+    {
+     "id": "space-3",
+     "string": " "
+    },
+    {
+     "id": "です",
+     "string": "です"
+    }
+   ]
+  },
+  {
+   "value": "日本語 です",
+   "numbers": false,
+   "diverges": "ICU joins a CJK letter run into one word; UAX #29 without dictionary breaking does not",
+   "segments": [
+    {
+     "id": "日本語",
+     "string": "日本語"
+    },
+    {
+     "id": "space-3",
+     "string": " "
+    },
+    {
+     "id": "です",
+     "string": "です"
+    }
+   ]
+  },
+  {
+   "value": "Hello 日本語",
+   "numbers": true,
+   "diverges": "ICU joins a CJK letter run into one word; UAX #29 without dictionary breaking does not",
+   "segments": [
+    {
+     "id": "Hello",
+     "string": "Hello"
+    },
+    {
+     "id": "space-5",
+     "string": " "
+    },
+    {
+     "id": "日本語",
+     "string": "日本語"
+    }
+   ]
+  },
+  {
+   "value": "Hello 日本語",
+   "numbers": false,
+   "diverges": "ICU joins a CJK letter run into one word; UAX #29 without dictionary breaking does not",
+   "segments": [
+    {
+     "id": "Hello",
+     "string": "Hello"
+    },
+    {
+     "id": "space-5",
+     "string": " "
+    },
+    {
+     "id": "日本語",
+     "string": "日本語"
+    }
+   ]
+  }
+ ],
  "numberRules": {
   "isNumericWord": [
    {

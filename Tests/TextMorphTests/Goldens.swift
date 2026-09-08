@@ -9,8 +9,23 @@ import Foundation
 struct Goldens: Decodable {
     let torphVersion: String
     let nodeUnicodeVersion: String
+    let segmentText: [GoldenSegmentTextCase]
     let numberRules: GoldenNumberRules
     let segmentNumber: GoldenSegmentNumber
+}
+
+/// How upstream cuts one value into segments.
+struct GoldenSegmentTextCase: Decodable {
+    let value: String
+    let numbers: Bool
+    /// Set when this port is known to disagree, and why.
+    ///
+    /// The only such case is a run of CJK letters in a value that holds a space
+    /// elsewhere: ICU joins the run into one word, and UAX #29 without
+    /// dictionary breaking does not. The case is still recorded, so the
+    /// difference lives in the fixture rather than in a comment.
+    let diverges: String?
+    let segments: [GoldenSegment]
 }
 
 /// A segment as upstream reports it, with minted identities canonicalised to

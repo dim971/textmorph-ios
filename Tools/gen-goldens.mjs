@@ -112,6 +112,86 @@ const CURSOR_CASES = [
   { old: "1,234", new: "1,234", cursor: 0 },
 ];
 
+// Values chosen to reach every branch of the segmenter: the word path and the
+// grapheme path, the newline path, the identity collision path, and each of the
+// grapheme cluster shapes that a naive per-character split would break.
+//
+// `diverges` marks a case where this port is known to disagree with upstream,
+// and says why. The only such case is a run of CJK letters with a space
+// elsewhere in the value: ICU joins the run into one word, and UAX #29 without
+// dictionary breaking does not. Upstream already segments those languages by
+// grapheme whenever the value holds no space, which is the common case, so the
+// difference is confined to spaced CJK.
+const TEXT_CASES = [
+  { value: "" },
+  { value: "a" },
+  { value: "balance" },
+  { value: "Hello world" },
+  { value: "Hello, world!" },
+  { value: "the quick brown fox" },
+  { value: "a b c" },
+  { value: "hello  double" },
+  { value: " lead" },
+  { value: "trail " },
+  { value: "  both  " },
+  { value: "a\tb" },
+  { value: "a...b" },
+  { value: "C++" },
+  { value: "don't" },
+  { value: "e.g" },
+  { value: "COVID-19" },
+  { value: "2024-01-01" },
+  { value: "3.5 km/h" },
+  { value: "1,234.56" },
+  { value: "$1,234.56" },
+  { value: "Total $1,204 today" },
+  { value: "12% of 1,000" },
+  { value: "a\nb" },
+  { value: "a\nb\nc" },
+  { value: "one two\nthree four" },
+  { value: "\n" },
+  { value: "a\n" },
+  { value: "\na" },
+  { value: "a\n\nb" },
+  { value: "aa" },
+  { value: "aaa" },
+  { value: "aba" },
+  { value: "a a" },
+  { value: "a a a" },
+  { value: "the the the" },
+  { value: "é" },
+  { value: "café au lait" },
+  { value: "\u{1F600}" },
+  { value: "\u{1F600}\u{1F601}" },
+  { value: "\u{1F1EB}\u{1F1F7}\u{1F1E9}\u{1F1EA}" },
+  { value: "\u{1F468}‍\u{1F469}‍\u{1F467}" },
+  { value: "hi \u{1F600} there" },
+  { value: "क्ष" },
+  { value: "ไทย" },
+  { value: "שלום" },
+  { value: "مرحبا بك" },
+  { value: "日本語" },
+  {
+    value: "日本語 です",
+    diverges: "ICU joins a CJK letter run into one word; UAX #29 without dictionary breaking does not",
+  },
+  {
+    value: "Hello 日本語",
+    diverges: "ICU joins a CJK letter run into one word; UAX #29 without dictionary breaking does not",
+  },
+];
+
+function segmentTextSection() {
+  return TEXT_CASES.flatMap((testCase) =>
+    [true, false].map((numbers) => ({
+      value: testCase.value,
+      numbers,
+      diverges: testCase.diverges ?? null,
+      segments: canonicalise(torph.segmentText(testCase.value, "en", numbers)),
+    })),
+  );
+}
+
 function numberRulesSection() {
   return {
     isNumericWord: NUMERIC_TOKENS.map((token) => ({
@@ -169,6 +249,7 @@ function segmentNumberSection() {
 const goldens = {
   torphVersion: TORPH_VERSION,
   nodeUnicodeVersion: process.versions.unicode,
+  segmentText: segmentTextSection(),
   numberRules: numberRulesSection(),
   segmentNumber: segmentNumberSection(),
 };
@@ -183,8 +264,11 @@ mkdirSync(dirname(path), { recursive: true });
 writeFileSync(path, JSON.stringify(goldens, null, 1) + "\n");
 console.log(`wrote ${path}`);
 for (const [name, section] of Object.entries(goldens)) {
-  if (typeof section !== "object") continue;
-  for (const [key, value] of Object.entries(section)) {
-    console.log(`  ${name}.${key}: ${Array.isArray(value) ? value.length : 1} cases`);
+  if (Array.isArray(section)) {
+    console.log(`  ${name}: ${section.length} cases`);
+  } else if (section !== null && typeof section === "object") {
+    for (const [key, value] of Object.entries(section)) {
+      console.log(`  ${name}.${key}: ${Array.isArray(value) ? value.length : 1} cases`);
+    }
   }
 }
