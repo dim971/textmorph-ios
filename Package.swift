@@ -17,6 +17,7 @@ let package = Package(
         .testTarget(
             name: "TextMorphTests",
             dependencies: ["TextMorph"],
+            resources: [.copy("Fixtures")],
             swiftSettings: [.swiftLanguageMode(.v6)]
         )
     ]
