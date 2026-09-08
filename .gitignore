@@ -5,4 +5,4 @@
 *.xcworkspace
 DerivedData/
 xcuserdata/
-Tools/node_modules/
+Tools/node_modules
