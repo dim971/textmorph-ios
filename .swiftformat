@@ -1,0 +1,14 @@
+--swiftversion 6.0
+--indent 4
+--maxwidth 110
+--wraparguments before-first
+--wrapparameters before-first
+--wrapcollections preserve
+--commas inline
+--self remove
+# One-line bodies are deliberate here: `if isNew { opacity = 0 }` reads better
+# than three lines. Newer SwiftFormat releases enable this rule by default, so
+# it is disabled explicitly rather than left to the version CI happens to get.
+--disable wrapIfStatementBodies
+
+--exclude .build,Showcase/TextMorphShowcase.xcodeproj

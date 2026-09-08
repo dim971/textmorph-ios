@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Upstream Torph
+    url: https://github.com/lochie/torph
+    about: For the original web library this is a port of.
+  - name: TextMorph for Jetpack Compose
+    url: https://github.com/dim971/textmorph-android
+    about: The Android twin of this library.

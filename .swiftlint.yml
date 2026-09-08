@@ -1,0 +1,26 @@
+excluded:
+  - .build
+  - Tests/TextMorphTests/Fixtures
+  - Sources/TextMorph/Core/UnicodeBreakTables.swift
+
+disabled_rules:
+  - todo
+
+opt_in_rules:
+  # the API design guidelines ask for a doc comment on every declaration
+  - missing_docs
+
+line_length:
+  warning: 110
+  error: 140
+
+identifier_name:
+  # the engine works in terms of a/b/i/j/t/dx/dy, matching the upstream source
+  min_length: 1
+  excluded: [a, b, i, j, k, m, n, t, x, y, w, h, dp, dx, dy, ni, oi, ci, id]
+
+type_name:
+  min_length: 2
+
+function_parameter_count:
+  warning: 7

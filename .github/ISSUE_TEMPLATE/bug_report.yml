@@ -1,0 +1,65 @@
+name: Bug report
+description: A morph animates, measures or segments differently than it should
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. A morph is a transition between two values, so
+        one value is never enough to reproduce it. Give both, and the options
+        in force.
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you saw, and what you expected instead.
+    validations:
+      required: true
+
+  - type: input
+    id: before
+    attributes:
+      label: The value before
+      placeholder: "$1,204"
+    validations:
+      required: true
+
+  - type: input
+    id: after
+    attributes:
+      label: The value after
+      placeholder: "$1,318"
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: How to reproduce
+      description: The smallest snippet that shows it, including the options and the locale.
+      render: swift
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: TextMorph version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+
+  - type: input
+    id: platform
+    attributes:
+      label: Platform and toolchain
+      placeholder: "iOS 18.2 simulator, Xcode 16.2"
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else
+      description: A screen recording, or a frame at the halfway point, is very welcome.

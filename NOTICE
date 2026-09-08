@@ -1,0 +1,21 @@
+TextMorph for SwiftUI
+=====================
+
+This package is a native SwiftUI port of Torph, a dependency-free animated text
+component for the web.
+
+    Torph: https://torph.lochie.me
+    https://github.com/lochie/torph
+    Copyright (c) 2025 Lochie Axon
+    Licensed under the MIT License
+
+The morph engine (Sources/TextMorph/Core) is a direct port of Torph's
+packages/torph/src/lib: the text segmentation in text-morph/utils/segment.ts,
+the place-value number segmentation in text-morph/utils/number.ts, the segment
+diff in text-morph/utils/diff.ts, the longest common subsequence in
+utils/lcs.ts, the animation timing in text-morph/utils/animate.ts,
+number-animate.ts and replace-animate.ts, and the spring and easing solvers in
+utils/spring.ts and utils/easing.ts.
+
+Test fixtures under Tests/TextMorphTests/Fixtures are generated from the
+published npm package so this port can be verified against upstream output.
