@@ -6,9 +6,18 @@
 --wrapcollections preserve
 --commas inline
 --self remove
-# One-line bodies are deliberate here: `if isNew { opacity = 0 }` reads better
-# than three lines. Newer SwiftFormat releases enable this rule by default, so
-# it is disabled explicitly rather than left to the version CI happens to get.
+# One-line bodies are deliberate here. `if isNew { opacity = 0 }` reads better
+# than three lines, and so does `var description: String { String(value) }`.
+# Newer SwiftFormat releases enable these rules by default, so they are
+# disabled explicitly rather than left to the version CI happens to get.
 --disable wrapIfStatementBodies
+--disable wrapFunctionBodies
+--disable wrapPropertyBodies
 
 --exclude .build,Showcase/TextMorphShowcase.xcodeproj
+
+# SwiftFormat wants the opening brace of a multiline declaration on its own
+# line; SwiftLint's opening_brace rule wants it on the declaration's last line
+# and is the more common Swift convention. The two must not fight over the same
+# file, so SwiftFormat yields.
+--disable wrapMultilineStatementBraces
