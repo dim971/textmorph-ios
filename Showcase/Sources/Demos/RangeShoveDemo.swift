@@ -30,8 +30,9 @@ struct RangeShoveDemo: View {
                 onFraction: handler,
                 bubbles: [bubble(lo), bubble(hi)]
             )
-            .animation(.easeOut(duration: 0.3), value: lo)
-            .animation(.easeOut(duration: 0.3), value: hi)
+            // Keyed on the preset, not the values: the presets glide and a
+            // drag does not, for the same reason as the single slider.
+            .animation(.easeOut(duration: 0.3), value: preset)
         }
         .autoplaying(autoplay, every: 2.2) { preset = (preset + 1) % presets.count }
     }

@@ -89,6 +89,9 @@ let shoveSquash = 0.16
 /// Points the tail hangs below the body. Its tip is the pivot.
 let bubbleTail = 9.0
 
+/// Half the tail's base, so it reads as a tail rather than as a spike.
+let bubbleTailHalfBase = 8.0
+
 /// Points of corner rounding on the body.
 let bubbleRadius = 14.0
 

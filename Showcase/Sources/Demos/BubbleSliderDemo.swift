@@ -30,9 +30,11 @@ struct BubbleSliderDemo: View {
                     .textMorphFont(stageFont(size: 20))
                     .textMorphColour(.black.opacity(0.9))
             }
-            // The value eases rather than cutting, so the pill is carried by
-            // the travel and the digits roll on the way.
-            .animation(.easeInOut(duration: 0.7), value: fraction)
+            // Autoplay eases to the next preset, so the pill is carried by the
+            // travel and the digits roll on the way. Keyed on the preset rather
+            // than on the value, so a drag is immediate: an easing between the
+            // finger and the thumb is the thumb lagging the finger.
+            .animation(.easeInOut(duration: 0.7), value: preset)
         }
         .autoplaying(autoplay, every: 1.7) { preset = (preset + 1) % presets.count }
     }
