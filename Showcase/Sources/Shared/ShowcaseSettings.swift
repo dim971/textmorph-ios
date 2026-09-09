@@ -39,4 +39,41 @@ final class ShowcaseSettings {
         options.locale = locale
         return options
     }
+
+    /// The same, with the ease a particular demo asks for.
+    ///
+    /// Several of upstream's demos name their own ease rather than taking the
+    /// default, and the choice is part of what the demo shows. Overriding
+    /// through the settings rather than around them keeps the playground's
+    /// switches working: debug, disabled and numbers still apply.
+    ///
+    /// The spring switch in the playground wins, so a reader can hear the whole
+    /// catalogue on one spring if they want to.
+    func options(
+        ease: TextMorphEase, decimals: Int? = nil, duration: Double? = nil
+    ) -> TextMorphOptions {
+        var options = options
+        if !useSpring { options.ease = ease }
+        options.decimals = decimals
+        if let duration { options.duration = duration }
+        return options
+    }
+
+    /// The spring nine of upstream's demos ask for by name.
+    ///
+    /// Softer and slower than the default bezier, and it overshoots, which is
+    /// why those demos are the ones where a value visibly settles rather than
+    /// arriving.
+    static let upstreamSpring = TextMorphEase.spring(
+        stiffness: 150, damping: 19, mass: 1.2
+    )
+
+    /// The curve `ExampleAction` names.
+    ///
+    /// Its control points rise past one, so it overshoots and comes back.
+    /// Upstream writes it as the CSS string `cubic-bezier(0.41, 1.03, 0.6,
+    /// 1.03)`; the typed API takes the four numbers, which is the same curve.
+    static let actionCurve = TextMorphEase.bezier(
+        CubicBezier(0.41, 1.03, 0.6, 1.03)
+    )
 }

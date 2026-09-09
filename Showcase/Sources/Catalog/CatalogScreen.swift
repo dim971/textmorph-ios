@@ -53,6 +53,10 @@ struct CatalogScreen: View {
                 .frame(maxWidth: .infinity, minHeight: 44)
                 .clipped()
                 .environment(\.showcaseAutoAdvance, true)
+                // A row lives inside a scrolling list, and a demo that grabs a
+                // drag there eats the scroll. So the previews run themselves
+                // and answer to nothing.
+                .environment(\.showcaseInteractive, false)
             Text(demo.summary)
                 .font(.caption)
                 .foregroundStyle(.secondary)
