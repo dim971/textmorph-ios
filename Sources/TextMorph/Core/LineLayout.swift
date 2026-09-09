@@ -39,6 +39,26 @@ public struct ShapedLineMetrics: Hashable, Sendable {
     public var lineHeight: Double { ascent + descent + leading }
 }
 
+/// A size in the container's own coordinates.
+///
+/// Doubles rather than `CGSize`, so nothing in the engine's signatures depends
+/// on CoreGraphics. The implicit conversion between `CGFloat` and `Double` is
+/// also a nuisance to compare: two values with identical bit patterns can come
+/// back unequal through it.
+public struct MorphSize: Hashable, Sendable {
+    public var width: Double
+    public var height: Double
+
+    /// Creates a size.
+    public init(width: Double, height: Double) {
+        self.width = width
+        self.height = height
+    }
+
+    /// Nothing.
+    public static let zero = MorphSize(width: 0, height: 0)
+}
+
 /// Where one segment sits in a laid-out value.
 public struct SegmentBox: Hashable, Sendable {
     /// The segment's identity, which is how a box is found across two layouts.
