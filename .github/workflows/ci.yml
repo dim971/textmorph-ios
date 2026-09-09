@@ -64,14 +64,22 @@ jobs:
       # a divergence is a changed digest rather than a discovery months later.
       # The expected values are checked in; regenerating either side is a
       # deliberate act and has to update this file with an explanation.
+      # Digested by basename rather than by path, so that
+      # .github/parity-digests.txt is byte identical in the two repositories and
+      # the two files can simply be diffed against each other.
       - name: Fixture and generator digests
         run: |
-          shasum -a 256 \
+          grep '^#' .github/parity-digests.txt > digests.txt
+          for file in \
             Tests/TextMorphTests/Fixtures/goldens.json \
             Tests/TextMorphTests/Fixtures/unicode-break-tests.json \
             Tools/gen-goldens.mjs \
-            Tools/gen-unicode-tables.mjs \
-            | tee digests.txt
+            Tools/gen-unicode-tables.mjs
+          do
+            printf '%s  %s\n' \
+              "$(shasum -a 256 "$file" | cut -d' ' -f1)" \
+              "$(basename "$file")" >> digests.txt
+          done
           diff digests.txt .github/parity-digests.txt
 
   showcase:

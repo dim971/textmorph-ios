@@ -1,4 +1,11 @@
-efa996b07ba84243a51804ced51a53ffecf38925b1a5b555ba983fe62bf9194b  Tests/TextMorphTests/Fixtures/goldens.json
-60de3b7f24128849c1fecfbf0145953a56dd405d22a96b5c9b1a01298a2c57d2  Tests/TextMorphTests/Fixtures/unicode-break-tests.json
-4a4d101f2de6c025c0bbf29c1d0b12ca2672f93089dc1578b9b86f996c61bd23  Tools/gen-goldens.mjs
-ba72b4ef23f1da3635219619f1f02830adcb22c80c7a7c342002c62d0daae90e  Tools/gen-unicode-tables.mjs
+# The four files the two ports share, by digest. This file is byte identical in
+# textmorph-ios and textmorph-android, and CI in both compares it against what
+# is actually checked in. A divergence is a red build rather than a discovery
+# months later.
+#
+# Regenerating a fixture is a deliberate act: it changes what the port claims to
+# be. Updating this file is part of that act, and the diff should say why.
+efa996b07ba84243a51804ced51a53ffecf38925b1a5b555ba983fe62bf9194b  goldens.json
+60de3b7f24128849c1fecfbf0145953a56dd405d22a96b5c9b1a01298a2c57d2  unicode-break-tests.json
+4a4d101f2de6c025c0bbf29c1d0b12ca2672f93089dc1578b9b86f996c61bd23  gen-goldens.mjs
+bd9fb20149dfa917e2fad71b48e1a8133c7971922aef1e7ddde3cf7eb11a4b28  gen-unicode-tables.mjs

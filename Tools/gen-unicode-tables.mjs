@@ -150,13 +150,27 @@ function flatten(ranges, withValue) {
   return out;
 }
 
-function hexLiterals(numbers, perLine, indent) {
+// Wrapped by column rather than by count, because a table of astral code points
+// has six hex digits to a value where a table of Latin ones has two, and a
+// fixed count that fits one overruns the other. Both projects lint the width of
+// the file they generate.
+//
+// Swift and Kotlin also disagree about a trailing comma in a literal list, and
+// both lint for that too, so the caller says which it wants.
+function hexLiterals(numbers, maxWidth, indent, trailingComma) {
+  const literals = numbers.map((n) => `0x${n.toString(16).toUpperCase()}`);
   const lines = [];
-  for (let i = 0; i < numbers.length; i += perLine) {
-    lines.push(
-      indent + numbers.slice(i, i + perLine).map((n) => `0x${n.toString(16).toUpperCase()}`).join(", ") + ",",
-    );
+  let line = indent;
+  for (const [index, literal] of literals.entries()) {
+    const last = index === literals.length - 1;
+    const piece = literal + (last && !trailingComma ? "" : ",");
+    if (line !== indent && line.length + 1 + piece.length > maxWidth) {
+      lines.push(line);
+      line = indent;
+    }
+    line += line === indent ? piece : ` ${piece}`;
   }
+  if (line !== indent) lines.push(line);
   return lines.join("\n");
 }
 
@@ -216,9 +230,9 @@ function emitSwift(tables) {
   for (const [name, numbers, stride] of tables) {
     parts.push(`    /// ${stride === 3 ? "start, end, value" : "start, end"} triples, sorted by start.`);
     parts.push(`    static let ${name}: [UInt32] = [`);
-    parts.push(hexLiterals(numbers, 12, "        "));
+    parts.push(hexLiterals(numbers, 110, "        ", false));
     parts.push("    ]");
-    parts.push("");
+    if (name !== tables[tables.length - 1][0]) parts.push("");
   }
   parts.push("}");
   return parts.join("\n") + "\n";
@@ -229,6 +243,12 @@ function emitKotlin(tables) {
   parts.push("package io.github.dim971.textmorph.core");
   parts.push("");
   parts.push(HEADER_LINES("kotlin").join("\n"));
+  parts.push("//");
+  parts.push("// The tables are hex rather than integer literals, six characters each, and");
+  parts.push("// that is not a stylistic choice: a JVM static initialiser cannot exceed 64KB");
+  parts.push("// of bytecode, and an `intArrayOf` of a few thousand elements does. A string");
+  parts.push("// is a constant-pool entry rather than bytecode, so it costs nothing to load");
+  parts.push("// and is decoded once. The Swift side has no such limit and keeps arrays.");
   parts.push("");
   parts.push(kotlinEnum("GraphemeBreakProperty", GRAPHEME_VALUES, "Grapheme_Cluster_Break, from UAX #29."));
   parts.push(kotlinEnum("WordBreakProperty", WORD_VALUES, "Word_Break, from UAX #29."));
@@ -239,12 +259,25 @@ function emitKotlin(tables) {
   parts.push(`    const val UNICODE_VERSION: String = "${UNICODE_VERSION}"`);
   parts.push("");
   for (const [name, numbers, stride] of tables) {
+    const hex = numbers.map((n) => n.toString(16).toUpperCase().padStart(6, "0")).join("");
     parts.push(`    /** ${stride === 3 ? "start, end, value" : "start, end"} triples, sorted by start. */`);
-    parts.push(`    val ${screamingSnake(name)}: IntArray = intArrayOf(`);
-    parts.push(hexLiterals(numbers, 12, "        "));
+    parts.push(`    val ${screamingSnake(name)}: IntArray = decode(`);
+    // Wrapped so the generated file stays readable at a hundred columns, and
+    // concatenated by the compiler rather than at runtime.
+    const chunks = [];
+    for (let i = 0; i < hex.length; i += 84) chunks.push(hex.slice(i, i + 84));
+    parts.push(chunks.map((chunk) => `        "${chunk}"`).join(" +\n"));
     parts.push("    )");
     parts.push("");
   }
+  parts.push("    /** Six hex characters per integer, in order. */");
+  parts.push("    private fun decode(hex: String): IntArray {");
+  parts.push("        val out = IntArray(hex.length / 6)");
+  parts.push("        for (index in out.indices) {");
+  parts.push("            out[index] = hex.substring(index * 6, index * 6 + 6).toInt(16)");
+  parts.push("        }");
+  parts.push("        return out");
+  parts.push("    }");
   parts.push("}");
   return parts.join("\n") + "\n";
 }
