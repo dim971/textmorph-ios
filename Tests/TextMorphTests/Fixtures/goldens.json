@@ -47470,6 +47470,10 @@
     "result": true
    },
    {
+    "token": "1’234",
+    "result": false
+   },
+   {
     "token": "1 234",
     "result": true
    },

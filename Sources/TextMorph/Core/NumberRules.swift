@@ -10,8 +10,21 @@ import Foundation
 /// a number, and therefore what morphs by place value rather than by character.
 enum NumberRules {
     /// Separators that can appear *between* digits without ending the number.
+    ///
+    /// Upstream's set, plus U+2019. That addition is a deliberate deviation and
+    /// it is here because two ICU versions disagree about Swiss German: CLDR
+    /// groups de-CH with U+0027 in one version and U+2019 in another, and which
+    /// one a device produces depends on its OS. Without U+2019 in this set the
+    /// same number would roll by place value on one OS version and morph
+    /// character by character on the next, which is a worse outcome than
+    /// widening the set by one character that is a group separator in CLDR
+    /// either way.
+    ///
+    /// U+2019 is also an apostrophe, so it is already a trailing affix. That
+    /// costs nothing: a token has to begin and end with a digit after trimming,
+    /// so "don't" written with it is still not a quantity.
     static let coreSeparators: Set<Character> = [
-        ".", ",", "'", "\u{00A0}", "\u{202F}", "\u{2009}", "\u{2007}"
+        ".", ",", "'", "\u{2019}", "\u{00A0}", "\u{202F}", "\u{2009}", "\u{2007}"
     ]
 
     /// Characters allowed before the first digit.

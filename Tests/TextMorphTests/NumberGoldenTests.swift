@@ -14,13 +14,33 @@ struct NumberGoldenTests {
     @Test("Whether a token is a quantity")
     func numericWordRecognition() {
         var failures: [String] = []
+        var deviations: [String] = []
+
         for testCase in goldens.numberRules.isNumericWord {
             let actual = NumberRules.isNumericWord(testCase.token)
-            if actual != testCase.result {
-                failures.append("  \(escaped(testCase.token)): expected \(testCase.result), got \(actual)")
+            guard actual != testCase.result else { continue }
+
+            // The one deliberate widening: U+2019 is a separator here and is
+            // not upstream, because CLDR groups Swiss German with it in some
+            // versions and a device's OS decides which. Without it the same
+            // number would roll on one OS version and not the next. Recorded
+            // rather than hidden, and only in this direction: a token upstream
+            // reads as a quantity and this does not is still a failure.
+            if testCase.token.contains("\u{2019}"), actual, !testCase.result {
+                deviations.append(escaped(testCase.token))
+                continue
             }
+
+            failures.append(
+                "  \(escaped(testCase.token)): expected \(testCase.result), got \(actual)"
+            )
         }
+
         #expect(failures.isEmpty, report(failures))
+        #expect(
+            !deviations.isEmpty,
+            "the corpus should carry the U+2019 token the widening is for"
+        )
     }
 
     @Test("The locale's decimal separator")

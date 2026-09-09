@@ -60,7 +60,7 @@ Nothing else anywhere has a tolerance.
 
 ## Deliberate deviations
 
-Four, all forced or fixed, all recorded in the fixtures rather than only in a
+Five, all forced or fixed, all recorded in the fixtures rather than only in a
 comment.
 
 **Minted numeric identities.** Upstream mints them from a module-global counter,
@@ -95,6 +95,21 @@ do dictionary breaking, so a run of CJK letters in a value that holds a space
 elsewhere stays one word where ICU cuts it into lexical words. Four fixture
 cases record it, and a test asserts they still diverge, so the day one of them
 starts agreeing is a test result rather than a surprise.
+
+**One separator added.** U+2019 is allowed between digits here and is not
+upstream. CLDR groups Swiss German with U+0027 in one version and U+2019 in
+another, and which one a device produces depends on its OS: 36 of the 4650
+formatting cases pass on macOS 26 and fail on macOS 15 for that one character.
+Without U+2019 in the set, the same de-CH number would roll by place value on
+one OS version and morph character by character on the next, which is worse
+than widening a set by a character that is a group separator in CLDR either
+way. The corpus carries a U+2019 token and the test asserts the deviation
+exists, in that direction only: a token upstream reads as a quantity and this
+does not is still a failure.
+
+That difference is also why the formatting comparison treats the two
+apostrophes as one separator, and asserts the difference is confined to de-CH.
+Anything else CLDR moves will still fail.
 
 ## Two upstream quirks reproduced rather than tidied
 

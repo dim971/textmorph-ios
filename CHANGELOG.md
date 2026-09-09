@@ -51,6 +51,10 @@ First release. A SwiftUI port of [Torph](https://torph.lochie.me) 0.1.3.
 - **A morph is never selectable.** It draws its own glyphs, and the plain
   `Text` that would restore selection when nothing is moving does not land in
   the same place, so there is one rendering path rather than a visible jump.
+- **U+2019 is a separator between digits, and is not upstream.** CLDR groups
+  Swiss German with U+0027 in one version and U+2019 in another, and a device's
+  OS decides which; without the addition, the same number would roll by place
+  value on one OS version and morph character by character on the next.
 - **The font and the colour are described rather than inherited.** `Font`
   cannot be measured and `.foregroundStyle` cannot be read back out of the
   environment, so `.textMorphFont(_:)` and `.textMorphColour(_:)` exist and
