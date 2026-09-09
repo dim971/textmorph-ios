@@ -12,7 +12,7 @@
 // deliberate act: it changes what this library claims to be, and the diff has
 // to be explainable. Do not regenerate to make a failing test pass.
 
-import { writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync, readFileSync } from "node:fs";
 import { dirname } from "node:path";
 
 const TORPH_VERSION = "0.1.3";
@@ -298,6 +298,180 @@ function diffSegmentsSection() {
   return cases;
 }
 
+// Values chosen for the places two number formatters part company: the default
+// fraction length, padding versus truncating, halves on both sides of zero,
+// grouping in a locale that groups by lakh, and a magnitude past what a double
+// represents exactly.
+const FORMAT_VALUES = [
+  0, 1, -1, 0.5, -0.5, 1.5, -1.5, 2.5, -2.5, 0.05, 0.125, 0.135,
+  1.005, 1.015, 3.5, 12.345, 1234.5, 1234567.5, 1234567.891,
+  999999.9995, 0.0001, 0.00001, 1e21, -1e21, 1e-7,
+];
+
+const FORMAT_DECIMALS = [null, 0, 1, 2, 3, 4];
+
+function numberFormattingSection() {
+  const cases = [];
+  for (const locale of LOCALES) {
+    for (const value of FORMAT_VALUES) {
+      for (const decimals of FORMAT_DECIMALS) {
+        cases.push({
+          value,
+          decimals,
+          locale,
+          formatted: value.toLocaleString(locale, {
+            minimumFractionDigits: decimals ?? undefined,
+            maximumFractionDigits: decimals ?? undefined,
+          }),
+        });
+      }
+    }
+  }
+  return cases;
+}
+
+// The easing and spring solvers are not part of torph's public API, so they
+// cannot be called the way segmentText can. They are still *in* the published
+// package, so rather than restate them here, which would only compare one
+// transcription against another, they are lifted out of the published bundle.
+//
+// Each one is found by a pattern over its body rather than by its minified
+// name, so a re-minify at the same version still finds it, and a version that
+// no longer contains it fails loudly instead of silently skipping a section.
+const INTERNAL_PROBES = {
+  springPosition: /function (\w+)\([^)]*\)\{if\(\w+<1\)\{let \w+=\w+\*Math\.sqrt\(1-\w+\*\w+\)/,
+  computeDuration: /function (\w+)\([^)]*\)\{let \w+=0;for\(let \w+=0;\w+<10;\w+\+=\.001\)/,
+  cubicBezier: /function (\w+)\([^)]*\)\{return \w+=>\{if\(\w+<=0\)return 0;if\(\w+>=1\)return 1;/,
+  slopeAt: /function (\w+)\((\w+),(\w+)\)\{let \w+=Math\.min\(Math\.max/,
+  carry: /function (\w+)\((\w+),(\w+)\)\{let \w+=Math\.max\(0,Math\.min\(/,
+};
+
+async function loadInternals() {
+  const entry = await import.meta.resolve("torph");
+  const bundle = readFileSync(new URL(entry), "utf8");
+
+  const renames = [];
+  for (const [name, pattern] of Object.entries(INTERNAL_PROBES)) {
+    const match = pattern.exec(bundle);
+    if (!match) {
+      throw new Error(
+        `could not find ${name} in ${entry}. The bundle changed shape; ` +
+          `update INTERNAL_PROBES rather than dropping the section.`,
+      );
+    }
+    renames.push(`${match[1]} as ${name}`);
+  }
+
+  const source = `${bundle}\nexport { ${renames.join(", ")} };\n`;
+  const url = `data:text/javascript;base64,${Buffer.from(source).toString("base64")}`;
+  return import(url);
+}
+
+const internals = await loadInternals();
+
+/** A curve at 101 evenly spaced points, which is finer than a frame at 120Hz. */
+function sampleCurve(curve, points = 101) {
+  return Array.from({ length: points }, (_, i) => curve(i / (points - 1)));
+}
+
+const BEZIERS = [
+  { name: "default", points: [0.19, 1, 0.22, 1] },
+  { name: "linear", points: [0, 0, 1, 1] },
+  { name: "ease", points: [0.25, 0.1, 0.25, 1] },
+  { name: "ease-in", points: [0.42, 0, 1, 1] },
+  { name: "ease-out", points: [0, 0, 0.58, 1] },
+  { name: "ease-in-out", points: [0.42, 0, 0.58, 1] },
+  // Deliberately outside the unit square on x, which CSS allows and which
+  // makes the bisection work for its answer.
+  { name: "overshoot", points: [0.34, 1.56, 0.64, 1] },
+  { name: "anticipate", points: [0.68, -0.55, 0.27, 1.55] },
+];
+
+const CARRY_VELOCITIES = [
+  0, 0.001, 0.5, 1, 1.5, 2, 3, 5, 7.9, 8, 8.1, 20, 1000, -1, -5,
+];
+
+// Parameters chosen for the branches: well underdamped, near critical from both
+// sides, exactly critical, and overdamped. The precision sweep is here because
+// the duration is a threshold crossing and the threshold is the precision.
+const SPRING_PARAMETERS = [
+  { stiffness: 100, damping: 10, mass: 1, precision: 0.001 },
+  { stiffness: 150, damping: 19, mass: 1.2, precision: 0.001 },
+  { stiffness: 200, damping: 20, mass: 1, precision: 0.001 },
+  { stiffness: 100, damping: 5, mass: 1, precision: 0.001 },
+  { stiffness: 100, damping: 1, mass: 1, precision: 0.001 },
+  { stiffness: 100, damping: 19.98, mass: 1, precision: 0.001 },
+  { stiffness: 100, damping: 20, mass: 1, precision: 0.001 },
+  { stiffness: 100, damping: 20.02, mass: 1, precision: 0.001 },
+  { stiffness: 100, damping: 30, mass: 1, precision: 0.001 },
+  { stiffness: 100, damping: 60, mass: 1, precision: 0.001 },
+  { stiffness: 1000, damping: 10, mass: 1, precision: 0.001 },
+  { stiffness: 10, damping: 10, mass: 1, precision: 0.001 },
+  { stiffness: 100, damping: 10, mass: 10, precision: 0.001 },
+  { stiffness: 100, damping: 10, mass: 0.1, precision: 0.001 },
+  { stiffness: 100, damping: 10, mass: 1, precision: 0.01 },
+  { stiffness: 100, damping: 10, mass: 1, precision: 0.0001 },
+  { stiffness: 100, damping: 10, mass: 1, precision: 1e-6 },
+];
+
+/** Preserves the values JSON flattens: NaN becomes null, and -0 becomes 0. */
+function exactly(value) {
+  if (Number.isNaN(value)) return "NaN";
+  if (Object.is(value, -0)) return "-0";
+  return value;
+}
+
+function easingSection() {
+  return {
+    bezier: BEZIERS.map(({ name, points }) => {
+      const curve = internals.cubicBezier(...points);
+      return {
+        name,
+        points,
+        samples: sampleCurve(curve),
+        slopeAtZero: internals.slopeAt(curve, 0),
+        slopeAtHalf: internals.slopeAt(curve, 0.5),
+        slopeAtOne: internals.slopeAt(curve, 1),
+      };
+    }),
+    carry: BEZIERS.slice(0, 3).flatMap(({ name, points }) =>
+      CARRY_VELOCITIES.map((velocity) => {
+        const base = internals.cubicBezier(...points);
+        const { curve, k } = internals.carry(base, velocity);
+        return { base: name, velocity, k: exactly(k), samples: sampleCurve(curve, 21) };
+      }),
+    ),
+  };
+}
+
+function springSection() {
+  return SPRING_PARAMETERS.map((parameters) => {
+    const { stiffness, damping, mass, precision } = parameters;
+    const omega0 = Math.sqrt(stiffness / mass);
+    const zeta = damping / (2 * Math.sqrt(stiffness * mass));
+    const duration = internals.computeDuration(omega0, zeta, precision);
+    const broken = Number.isNaN(internals.springPosition(0.5, omega0, zeta));
+
+    return {
+      ...parameters,
+      omega0,
+      zeta,
+      // Recorded for the record even where it is nonsense, so the deviation
+      // lives in the fixture rather than only in a comment.
+      upstreamDuration: exactly(duration),
+      deviates: broken
+        ? "upstream's overdamped branch divides by zero at a damping ratio of one, "
+          + "so springPosition is NaN and the duration is minus zero"
+        : null,
+      samples: broken
+        ? null
+        : Array.from({ length: 21 }, (_, i) =>
+            internals.springPosition((i / 20) * (duration / 1000), omega0, zeta),
+          ),
+    };
+  });
+}
+
 function numberRulesSection() {
   return {
     isNumericWord: NUMERIC_TOKENS.map((token) => ({
@@ -358,6 +532,7 @@ const goldens = {
   segmentText: segmentTextSection(),
   diffSegments: diffSegmentsSection(),
   numberRules: numberRulesSection(),
+  numberFormatting: numberFormattingSection(),
   segmentNumber: segmentNumberSection(),
 };
 

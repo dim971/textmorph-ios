@@ -12,6 +12,7 @@ struct Goldens: Decodable {
     let segmentText: [GoldenSegmentTextCase]
     let diffSegments: [GoldenDiffCase]
     let numberRules: GoldenNumberRules
+    let numberFormatting: [GoldenFormatCase]
     let segmentNumber: GoldenSegmentNumber
 }
 
@@ -50,6 +51,90 @@ struct GoldenDiffCase: Decodable {
 struct GoldenSplitSegment: Decodable, Equatable {
     let id: String
     let string: String
+}
+
+/// One numeric value, formatted by upstream.
+struct GoldenFormatCase: Decodable {
+    let value: Double
+    /// nil means Intl's own default fraction length.
+    let decimals: Int?
+    let locale: String
+    let formatted: String
+}
+
+/// The easing solvers, lifted out of the published bundle.
+struct GoldenEasing: Decodable {
+    struct BezierCase: Decodable {
+        let name: String
+        let points: [Double]
+        let samples: [Double]
+        let slopeAtZero: Double
+        let slopeAtHalf: Double
+        let slopeAtOne: Double
+    }
+
+    struct CarryCase: Decodable {
+        let base: String
+        let velocity: Double
+        /// A string where the value is one JSON flattens: "NaN" or "-0".
+        let k: GoldenExactDouble
+        let samples: [Double]
+    }
+
+    let bezier: [BezierCase]
+    let carry: [CarryCase]
+}
+
+/// The spring solver, lifted out of the published bundle.
+struct GoldenSpringCase: Decodable {
+    let stiffness: Double
+    let damping: Double
+    let mass: Double
+    let precision: Double
+    let omega0: Double
+    let zeta: Double
+    /// What upstream returns, including where that is nonsense.
+    let upstreamDuration: GoldenExactDouble
+    /// Set where upstream is broken and this port deliberately is not.
+    let deviates: String?
+    /// Absent where upstream returns NaN and there is nothing to compare.
+    let samples: [Double]?
+}
+
+/// A double, or the two values JSON cannot carry.
+///
+/// `JSON.stringify` turns NaN into null and minus zero into zero, and both of
+/// those are exactly what the broken spring case produces, so the generator
+/// writes them as strings and this reads them back.
+enum GoldenExactDouble: Decodable, Equatable {
+    case value(Double)
+    case notANumber
+    case negativeZero
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if let number = try? container.decode(Double.self) {
+            self = .value(number)
+            return
+        }
+        switch try container.decode(String.self) {
+        case "NaN": self = .notANumber
+        case "-0": self = .negativeZero
+        case let other:
+            throw DecodingError.dataCorruptedError(
+                in: container, debugDescription: "unexpected exact double \(other)"
+            )
+        }
+    }
+
+    /// The value as a double, with the two special cases restored.
+    var double: Double {
+        switch self {
+        case let .value(number): number
+        case .notANumber: Double.nan
+        case .negativeZero: -0.0
+        }
+    }
 }
 
 /// A segment as upstream reports it, with minted identities canonicalised to
