@@ -76,6 +76,22 @@ public struct SegmentBox: Hashable, Sendable {
     /// The segment's UTF-16 range within its own line, which is what the
     /// shaper needs to draw exactly these glyphs.
     public let range: Range<Int>
+    /// The whole line's text.
+    ///
+    /// Carried on the box so a plan is drawable on its own, without the layouts
+    /// it came from. A segment that is leaving belongs to a line that no longer
+    /// exists in the new value, so there would otherwise be nothing to shape it
+    /// against.
+    public let lineText: String
+
+    /// Where this segment's line begins, in the container's coordinates.
+    ///
+    /// Not the same as `x`, and the difference matters when drawing: a shaper
+    /// reports a glyph's position relative to the *line* it shaped, so a
+    /// segment's glyphs have to be drawn from the line's origin. Drawing them
+    /// from the segment's own `x` counts the offset twice and throws everything
+    /// but the first word off the end.
+    public let lineOrigin: Double
 
     /// The centre, which is what a run collapsing as one shape scales about.
     public var centre: MorphPoint {
@@ -244,7 +260,9 @@ public enum LineLayout {
                     width: right - left,
                     height: lineHeight,
                     line: lineIndex,
-                    range: start ..< end
+                    range: start ..< end,
+                    lineText: line.text,
+                    lineOrigin: origin
                 ))
             }
         }

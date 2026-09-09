@@ -165,11 +165,17 @@ final class MorphEngine {
 
     /// Stops everything where it should have ended up.
     private func settleImmediately() {
-        running = nil
         ghosts = []
         // Deliberately not cancelled: upstream fires neither callback on this
         // path, because the morph did not fail, it was switched off.
         token = nil
+        guard let layout else {
+            running = nil
+            return
+        }
+        running = RunningMorph(
+            plan: MorphPlanner.still(layout, segments: segments), startedAt: .distantPast
+        )
     }
 
     // MARK: - the value
@@ -209,16 +215,22 @@ final class MorphEngine {
         return true
     }
 
-    /// The value arrives already in place: no plan, no clock, no callbacks.
+    /// The value arrives already in place: no clock, no callbacks.
+    ///
+    /// It still gets a plan, because there is only one rendering path: a still
+    /// plan is how "draw this, not moving" is expressed.
     private func settle(_ formatted: String) {
         segments = TextSegmenter.segmentText(
             formatted, locale: options.locale, numbers: options.numbers, minter: minter
         )
-        layout = store.layout(segments, alignment: alignment)
+        let layout = store.layout(segments, alignment: alignment)
+        self.layout = layout
         // A later diff against these would animate from boxes that were never
         // on screen, so the next enabled morph starts fresh.
         isFirstValue = true
-        running = nil
+        running = RunningMorph(
+            plan: MorphPlanner.still(layout, segments: segments), startedAt: .distantPast
+        )
         ghosts = []
     }
 
