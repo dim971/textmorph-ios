@@ -96,11 +96,11 @@ struct MorphAnchorTests {
     func deltas() {
         var previous = SegmentPositions()
         for (id, point) in goldens.anchors.previous {
-            previous[id] = SegmentPositions.Point(x: point.x, y: point.y)
+            previous[id] = MorphPoint(x: point.x, y: point.y)
         }
         var current = SegmentPositions()
         for (id, point) in goldens.anchors.current {
-            current[id] = SegmentPositions.Point(x: point.x, y: point.y)
+            current[id] = MorphPoint(x: point.x, y: point.y)
         }
 
         var failures: [String] = []

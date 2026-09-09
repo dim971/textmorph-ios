@@ -7,26 +7,34 @@
 // there is nothing to read back. What remains of the file is the part that
 // decides which segment a moving one takes its bearing from, and that is pure.
 
+/// A point in the container's own coordinates, with y increasing downwards.
+public struct MorphPoint: Hashable, Sendable {
+    /// From the container's left edge.
+    public var x: Double
+    /// From the container's top edge.
+    public var y: Double
+
+    /// Creates a point.
+    public init(x: Double, y: Double) {
+        self.x = x
+        self.y = y
+    }
+}
+
 /// Where each segment sits, by identity, in one layout.
 ///
 /// A dictionary rather than an array because a segment is found by identity,
 /// not by position: the whole point of the diff is that position changes.
 struct SegmentPositions {
-    private var positions: [String: Point] = [:]
-
-    /// A point in the container's own coordinates.
-    struct Point: Hashable {
-        var x: Double
-        var y: Double
-    }
+    private var positions: [String: MorphPoint] = [:]
 
     init() {}
 
-    init(_ positions: [String: Point]) {
+    init(_ positions: [String: MorphPoint]) {
         self.positions = positions
     }
 
-    subscript(id: String) -> Point? {
+    subscript(id: String) -> MorphPoint? {
         get { positions[id] }
         set { positions[id] = newValue }
     }
