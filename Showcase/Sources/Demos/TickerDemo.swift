@@ -1,22 +1,91 @@
 import SwiftUI
 import TextMorph
 
-/// A value that changes faster than the morph settles.
+private let baseline = 7240.0
+
+/// One slot's travel, which is both the scroll speed and the sampling rate.
+private let slotSeconds = 0.42
+
+private let window = 20
+
+private func compact(_ value: Double) -> String {
+    value >= 1000
+        ? "\((value / 1000 * 10).rounded() / 10)K"
+        : "\(Int(value.rounded()))"
+}
+
+private func percent(_ value: Double) -> String {
+    let sign = value > 0 ? "+" : ""
+    return "\(sign)\((value * 10).rounded() / 10)%"
+}
+
+/// A live figure with its recent history drawn behind it.
 struct TickerDemo: View {
     @Environment(ShowcaseSettings.self) private var settings
-    @State private var price = 128.44
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var series = Array(repeating: baseline, count: window)
+    @State private var change = 12.4
+
+    private var rising: Bool { change >= 0 }
+
+    private var tint: Color {
+        rising
+            ? Color(red: 0.29, green: 0.87, blue: 0.50)
+            : Color(red: 1, green: 0.42, blue: 0.42)
+    }
 
     var body: some View {
-        Ticking(interval: 0.12) {
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
-                TextMorph(price, options: settings.options(decimals: 2))
-                    .textMorphFont(.system(size: 36, weight: .semibold, design: .monospaced))
-                Text("USD")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
+        Stage {
+            spark
+                .frame(width: 260, height: 56)
+            HStack(alignment: .bottom) {
+                VStack(alignment: .leading, spacing: 2) {
+                    TextMorph(compact(series.last ?? baseline), options: settings.options)
+                        .textMorphFont(stageFont(size: 26))
+                    Caption("requests / min")
+                }
+                Spacer()
+                VStack(alignment: .trailing, spacing: 2) {
+                    TextMorph(
+                        percent(change),
+                        options: settings.options(ease: ShowcaseSettings.upstreamSpring)
+                    )
+                    .textMorphFont(stageFont(size: 26))
+                    .textMorphColour(tint)
+                    Caption("vs. last week")
+                }
             }
-        } advance: {
-            price = max(80, min(180, price + Double.random(in: -1.2 ... 1.2))).rounded(to: 2)
+            .frame(width: 260)
+        }
+        .task(id: reduceMotion) {
+            guard !reduceMotion else { return }
+            var drift = 0.0
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(slotSeconds))
+                guard !Task.isCancelled else { return }
+                drift = drift * 0.8 + (Double.random(in: 0 ... 1) - 0.5) * 1.6
+                let next = min(11000, max(4000, (series.last ?? baseline) + drift * 90))
+                series = Array(series.dropFirst()) + [next]
+                change = change * 0.9 + drift
+            }
+        }
+    }
+
+    private var spark: some View {
+        GeometryReader { geometry in
+            let low = series.min() ?? 0
+            let high = series.max() ?? 1
+            let span = max(1, high - low)
+            Path { path in
+                for (index, value) in series.enumerated() {
+                    let point = CGPoint(
+                        x: geometry.size.width * Double(index) / Double(series.count - 1),
+                        y: geometry.size.height * (1 - (value - low) / span)
+                    )
+                    if index == 0 { path.move(to: point) } else { path.addLine(to: point) }
+                }
+            }
+            .stroke(tint, style: StrokeStyle(lineWidth: 2.5, lineCap: .round))
         }
     }
 
@@ -24,22 +93,18 @@ struct TickerDemo: View {
         Demo(
             id: "ticker",
             name: "Ticker",
-            summary: "A new value every eighth of a second, against a morph that takes four "
-                + "hundred milliseconds. Each morph is interrupted by the next and carries on "
-                + "from where it had got to, and the box resumes its curve rather than replaying "
-                + "the opening sliver of it. Without that the digits race and the box crawls.",
-            capability: "interruption, carried momentum, and the container resuming",
+            summary: "A figure sampled twice a second, with its history drawn behind it and a "
+                + "change that can turn negative. Two morphs on two different eases in one "
+                + "card: the count on the default curve, the percentage on a spring, so the "
+                + "second visibly settles after the first has arrived. Every sample interrupts "
+                + "the morph before it.",
+            capability: "interruption, carried momentum, and two eases at once",
             code: """
-            // updated every 120ms, against a 400ms morph
-            TextMorph(price, options: TextMorphOptions(decimals: 2))
+            TextMorph(compact(requests))
+            TextMorph(percent(change), options: TextMorphOptions(
+                ease: .spring(stiffness: 150, damping: 19, mass: 1.2)
+            ))
             """
         ) { TickerDemo() }
-    }
-}
-
-private extension Double {
-    func rounded(to places: Int) -> Double {
-        let factor = pow(10.0, Double(places))
-        return (self * factor).rounded() / factor
     }
 }

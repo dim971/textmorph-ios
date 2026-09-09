@@ -1,30 +1,24 @@
 import SwiftUI
 import TextMorph
 
-/// A number that abbreviates as it runs out of room.
+private let phrases = [
+    "3 hours 24 minutes ago",
+    "3 hr 24 min ago",
+    "3h 24m ago",
+    "3h ago",
+    "now"
+]
+
+/// A phrase abbreviating as the room runs out.
 struct SqueezeToAbbreviateDemo: View {
     @Environment(ShowcaseSettings.self) private var settings
-    @State private var width = 220.0
-
-    private let count = 1_204_318.0
-
-    /// The widest form that fits.
-    private var text: String {
-        if width > 170 { return count.formatted(.number.locale(defaultMorphLocale)) }
-        if width > 120 { return "\((count / 1000).rounded())k" }
-        return "\((count / 100_000).rounded() / 10)M"
-    }
 
     var body: some View {
-        VStack(spacing: 16) {
-            TextMorph(text, options: settings.options)
-                .textMorphFont(.system(size: 32, weight: .semibold))
-                .frame(width: width, alignment: .leading)
-                .clipped()
-            Slider(value: $width, in: 70 ... 240) {
-                Text("Room")
+        Cycling(count: phrases.count, interval: 3) { index in
+            Stage {
+                TextMorph(phrases[index], options: settings.options)
+                    .textMorphFont(stageFont(size: 24, weight: .regular))
             }
-            .frame(maxWidth: 260)
         }
     }
 
@@ -32,14 +26,14 @@ struct SqueezeToAbbreviateDemo: View {
         Demo(
             id: "squeeze",
             name: "Squeeze to abbreviate",
-            summary: "Drag the slider. As the room runs out the value switches to a shorter form, "
-                + "and the digits that survive the switch carry across rather than the whole "
-                + "number being replaced.",
-            capability: "a magnitude jump, and the cap that stops one smearing",
+            summary: "The same timestamp in five lengths, from a full sentence down to one "
+                + "word. Every step keeps the digits and drops the words around them, so the "
+                + "3 and the 24 hold their places while hours becomes hr becomes h. The last "
+                + "step keeps nothing at all, and that is where the group replacement takes "
+                + "over.",
+            capability: "words shrinking around quantities that stay put",
             code: """
-            // 1,204,318 -> 1204k -> 1.2M as the room runs out
-            TextMorph(abbreviated(count, fitting: width))
-                .frame(width: width, alignment: .leading)
+            TextMorph(phrases[step])
             """
         ) { SqueezeToAbbreviateDemo() }
     }
