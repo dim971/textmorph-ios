@@ -22,7 +22,9 @@ struct SpinDialDemo: View {
     }
 
     var body: some View {
-        Stage(caption: autoplay.isPlaying ? "drag around the dial" : "\(value) of \(dialMax)") {
+        let caption = autoplay.isPlaying ? "drag around the dial" : "\(value) of \(dialMax)"
+
+        return Stage(caption: caption) {
             ZStack {
                 ticks
                 TextMorph(
@@ -40,15 +42,21 @@ struct SpinDialDemo: View {
 
     private var ticks: some View {
         Canvas { context, size in
-            let radius = min(size.width, size.height) / 2 - 8
+            // Spelled out in steps rather than in one expression. Xcode 16.4
+            // gives up type-checking the nested arithmetic inside a Canvas
+            // closure, and a build that only fails on the older toolchain is
+            // worse than a few extra lines.
+            let radius: Double = min(size.width, size.height) / 2 - 8
             let centre = CGPoint(x: size.width / 2, y: size.height / 2)
             let count = 60
-            let lit = Int((Double(value) / Double(dialMax) * Double(count)).rounded())
+            let share = Double(value) / Double(dialMax)
+            let lit = Int((share * Double(count)).rounded())
             for i in 0 ..< count {
                 // Starting at the bottom and going clockwise, so an empty dial
                 // reads as empty rather than as half full.
-                let a = .pi / 2 + (Double(i) / Double(count)) * 2 * .pi
-                let inner = radius - (i < lit ? 16 : 10)
+                let turn = Double(i) / Double(count)
+                let a = Double.pi / 2 + turn * 2 * Double.pi
+                let inner: Double = radius - (i < lit ? 16 : 10)
                 var path = Path()
                 path.move(to: CGPoint(
                     x: centre.x + cos(a) * inner, y: centre.y + sin(a) * inner
@@ -80,8 +88,9 @@ struct SpinDialDemo: View {
                 if delta > .pi { delta -= 2 * .pi }
                 if delta < -.pi { delta += 2 * .pi }
                 lastAngle = angle
-                let degrees = delta * 180 / .pi
-                turned = max(0, min(Double(dialMax), (turned ?? 0) + degrees / stepDegrees))
+                let degrees: Double = delta * 180 / Double.pi
+                let next: Double = (turned ?? 0) + degrees / stepDegrees
+                turned = max(0, min(Double(dialMax), next))
             }
     }
 

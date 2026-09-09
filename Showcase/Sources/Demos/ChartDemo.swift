@@ -9,6 +9,8 @@ private let months: [(String, Int)] = [
 
 private let peak = months.map(\.1).max() ?? 1
 
+private let barHeight = 72.0
+
 /// A figure scrubbed out of a chart.
 struct ChartDemo: View {
     @Environment(ShowcaseSettings.self) private var settings
@@ -38,25 +40,32 @@ struct ChartDemo: View {
             GeometryReader { geometry in
                 HStack(alignment: .bottom, spacing: 4) {
                     ForEach(Array(months.enumerated()), id: \.offset) { index, entry in
+                        // Spelled out in steps, because Xcode 16.4 gives up
+                        // type-checking the arithmetic inline.
+                        let share = Double(entry.1) / Double(peak)
                         RoundedRectangle(cornerRadius: 3)
-                            .fill(index == month ? Color.accentColor : Color(uiColor: .tertiarySystemFill))
-                            .frame(height: 72 * Double(entry.1) / Double(peak))
+                            .fill(
+                                index == month
+                                    ? Color.accentColor
+                                    : Color(uiColor: .tertiarySystemFill)
+                            )
+                            .frame(height: barHeight * share)
                     }
                 }
-                .frame(height: 72, alignment: .bottom)
+                .frame(height: barHeight, alignment: .bottom)
                 .contentShape(.rect)
                 .gesture(
                     DragGesture(minimumDistance: 0)
                         .onChanged { drag in
                             autoplay.takeOver()
-                            let slot = Int((drag.location.x / geometry.size.width
-                                    * Double(months.count)).rounded())
+                            let across: Double = drag.location.x / geometry.size.width
+                            let slot = Int((across * Double(months.count)).rounded())
                             month = max(0, min(months.count - 1, slot))
                         },
                     including: live ? .all : .none
                 )
             }
-            .frame(width: 260, height: 72)
+            .frame(width: 260, height: barHeight)
         }
         .autoplaying(autoplay, every: 1.3) { month = (month + 1) % months.count }
     }

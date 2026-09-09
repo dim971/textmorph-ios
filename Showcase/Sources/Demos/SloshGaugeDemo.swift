@@ -3,6 +3,8 @@ import TextMorph
 
 private let levels = [0.72, 0.52, 0.95, 0.46]
 
+private let tankHeight = 96.0
+
 /// A tank filling and emptying, with its level written across it.
 struct SloshGaugeDemo: View {
     @Environment(ShowcaseSettings.self) private var settings
@@ -19,7 +21,7 @@ struct SloshGaugeDemo: View {
                 // The liquid, filling from the bottom.
                 VStack(spacing: 0) {
                     Spacer(minLength: 0)
-                    Color.accentColor.frame(height: 96 * level)
+                    Color.accentColor.frame(height: tankHeight * level)
                 }
                 // The value twice: once in the ink colour, and once in a dark
                 // one clipped to the liquid, so the digits under the surface
@@ -31,10 +33,10 @@ struct SloshGaugeDemo: View {
                     .textMorphFont(stageFont(size: 30))
                     .textMorphColour(.black.opacity(0.85))
                     .mask(alignment: .bottom) {
-                        Color.black.frame(height: 96 * level)
+                        Color.black.frame(height: tankHeight * level)
                     }
             }
-            .frame(width: 150, height: 96)
+            .frame(width: 150, height: tankHeight)
             .clipShape(.rect(cornerRadius: 14))
             .animation(.interpolatingSpring(mass: 1, stiffness: 90, damping: 10), value: level)
         }

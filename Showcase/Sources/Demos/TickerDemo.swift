@@ -76,12 +76,18 @@ struct TickerDemo: View {
             let low = series.min() ?? 0
             let high = series.max() ?? 1
             let span = max(1, high - low)
+            // Spelled out in steps. Xcode 16.4 gives up type-checking this
+            // arithmetic when it is written as two expressions inside a
+            // CGPoint, and a build that only fails on the older toolchain is
+            // worse than a few extra lines.
             Path { path in
+                let width: Double = geometry.size.width
+                let height: Double = geometry.size.height
+                let last = Double(max(1, series.count - 1))
                 for (index, value) in series.enumerated() {
-                    let point = CGPoint(
-                        x: geometry.size.width * Double(index) / Double(series.count - 1),
-                        y: geometry.size.height * (1 - (value - low) / span)
-                    )
+                    let along = Double(index) / last
+                    let up: Double = (value - low) / span
+                    let point = CGPoint(x: width * along, y: height * (1 - up))
                     if index == 0 { path.move(to: point) } else { path.addLine(to: point) }
                 }
             }
