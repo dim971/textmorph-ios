@@ -330,25 +330,62 @@ struct RangeTrack: View {
     }
 }
 
-/// A rounded body with a tail hanging off the bottom, tip down.
+/// A rounded body with a tail flowing out of its bottom edge, tip down.
 ///
-/// The tip is where the bubble pivots, which is why it is part of the shape
-/// rather than a separate view: the rotation's anchor can then be the bottom of
-/// the box and mean the right thing.
+/// One continuous outline rather than a body plus a triangle, and that is not
+/// tidiness: two subpaths wound in opposite directions cancel where they
+/// overlap under non-zero winding, which drew a pale seam across the join and
+/// made the tail read as a separate arrow stuck underneath. One path has
+/// nothing to cancel against.
+///
+/// The tail leaves and rejoins the bottom edge on quadratic curves, so it grows
+/// out of the bubble rather than being welded to it. Its apex is exactly the
+/// bottom centre of the box, which is the point the rotation anchors on.
 private struct BubbleShape: Shape {
     func path(in rect: CGRect) -> Path {
-        let body = rect.height - bubbleTail
-        var path = Path(
-            roundedRect: CGRect(x: 0, y: 0, width: rect.width, height: body),
-            cornerRadius: bubbleRadius
+        let w = rect.width
+        let h = rect.height
+        let body = h - bubbleTail
+        let r = min(bubbleRadius, w / 2, body / 2)
+        let base = bubbleTailHalfBase
+        let middle = w / 2
+
+        var path = Path()
+        path.move(to: CGPoint(x: r, y: 0))
+        path.addLine(to: CGPoint(x: w - r, y: 0))
+        path.addArc(
+            tangent1End: CGPoint(x: w, y: 0),
+            tangent2End: CGPoint(x: w, y: body),
+            radius: r
         )
-        // Symmetric, and its apex is exactly the bottom centre of the box,
-        // which is what the rotation anchors on. An off-centre apex means the
-        // pill pivots about a point that is not its tip, so the tail slides off
-        // the thumb as it leans.
-        path.move(to: CGPoint(x: rect.width / 2 - bubbleTailHalfBase, y: body - 1))
-        path.addLine(to: CGPoint(x: rect.width / 2, y: rect.height))
-        path.addLine(to: CGPoint(x: rect.width / 2 + bubbleTailHalfBase, y: body - 1))
+        path.addLine(to: CGPoint(x: w, y: body - r))
+        path.addArc(
+            tangent1End: CGPoint(x: w, y: body),
+            tangent2End: CGPoint(x: 0, y: body),
+            radius: r
+        )
+        // Out along the bottom edge to where the tail begins, then down.
+        path.addLine(to: CGPoint(x: middle + base, y: body))
+        path.addQuadCurve(
+            to: CGPoint(x: middle, y: h),
+            control: CGPoint(x: middle + base * 0.45, y: h)
+        )
+        path.addQuadCurve(
+            to: CGPoint(x: middle - base, y: body),
+            control: CGPoint(x: middle - base * 0.7, y: body + bubbleTail * 0.5)
+        )
+        path.addLine(to: CGPoint(x: r, y: body))
+        path.addArc(
+            tangent1End: CGPoint(x: 0, y: body),
+            tangent2End: CGPoint(x: 0, y: 0),
+            radius: r
+        )
+        path.addLine(to: CGPoint(x: 0, y: r))
+        path.addArc(
+            tangent1End: CGPoint(x: 0, y: 0),
+            tangent2End: CGPoint(x: w, y: 0),
+            radius: r
+        )
         path.closeSubpath()
         return path
     }
