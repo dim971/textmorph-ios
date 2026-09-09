@@ -1,0 +1,92 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  package:
+    name: Package
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      # The em dash and the en dash are banned in this repository; see CLAUDE.md.
+      - name: No em dash
+        run: |
+          if git grep -In $'\xe2\x80\x94' -- . || git grep -In $'\xe2\x80\x93' -- .; then
+            echo "::error::U+2014 or U+2013 found; use a comma, a colon or a full stop"
+            exit 1
+          fi
+
+      - name: Show toolchain
+        run: swift --version
+
+      - name: Build
+        run: swift build --build-tests
+
+      # The engine is pinned to the JavaScript original's output; a failure here
+      # means the port has drifted. See docs/fidelity.md.
+      - name: Test
+        run: swift test
+
+      - name: Fail on warnings
+        run: |
+          rm -rf .build
+          swift build --build-tests 2>&1 | tee build.log
+          if grep -q "warning:" build.log; then
+            echo "::error::the build emitted warnings"
+            grep "warning:" build.log
+            exit 1
+          fi
+
+  lint:
+    name: Lint
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - run: brew install swiftformat swiftlint
+      - run: swiftformat --lint .
+      - run: swiftlint lint --strict
+
+  parity:
+    name: Parity with Android
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # The two ports replay the same fixtures and run the same generators, so
+      # a divergence is a changed digest rather than a discovery months later.
+      # The expected values are checked in; regenerating either side is a
+      # deliberate act and has to update this file with an explanation.
+      - name: Fixture and generator digests
+        run: |
+          shasum -a 256 \
+            Tests/TextMorphTests/Fixtures/goldens.json \
+            Tests/TextMorphTests/Fixtures/unicode-break-tests.json \
+            Tools/gen-goldens.mjs \
+            Tools/gen-unicode-tables.mjs \
+            | tee digests.txt
+          diff digests.txt .github/parity-digests.txt
+
+  showcase:
+    name: Showcase app
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - run: brew install xcodegen
+      - name: Generate the project
+        working-directory: Showcase
+        run: xcodegen generate
+      - name: Build for the simulator
+        run: |
+          xcodebuild build \
+            -project Showcase/TextMorphShowcase.xcodeproj \
+            -scheme TextMorphShowcase \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO
