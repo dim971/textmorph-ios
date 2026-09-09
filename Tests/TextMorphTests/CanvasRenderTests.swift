@@ -21,7 +21,7 @@
     ///
     /// macOS only: `ImageRenderer` needs a window server, and the package
     /// declares macOS so the suite can run without a simulator.
-    @Suite("What the canvas draws", .serialized)
+    @Suite("What the canvas draws", .serialized, .enabled(if: RenderCapability.isAvailable))
     @MainActor
     struct CanvasRenderTests {
         private let value = "AVATAR Wave 1,234.56"

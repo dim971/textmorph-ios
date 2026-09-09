@@ -5,6 +5,23 @@
     import SwiftUI
     import Testing
 
+    /// Whether to rasterise views in this run.
+    ///
+    /// `ImageRenderer` needs a window server. A continuous integration runner
+    /// does not always have one, and a build turning red for a reason that has
+    /// nothing to do with the code is worse than a gap in coverage, so these
+    /// are skipped there and run everywhere else. The arithmetic half of the
+    /// same claim is asserted in LayoutTests, which needs nothing at all.
+    ///
+    /// If the runner turns out to have a window server, dropping this is one
+    /// line and worth doing: a pixel comparison is the only thing that caught
+    /// the drawing being wrong.
+    enum RenderCapability {
+        static var isAvailable: Bool {
+            ProcessInfo.processInfo.environment["CI"] == nil
+        }
+    }
+
     /// Reading and comparing what a view actually drew.
     ///
     /// Plumbing rather than a claim: it is here so the suite next door reads as
