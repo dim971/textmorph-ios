@@ -344,6 +344,13 @@ const INTERNAL_PROBES = {
   cubicBezier: /function (\w+)\([^)]*\)\{return \w+=>\{if\(\w+<=0\)return 0;if\(\w+>=1\)return 1;/,
   slopeAt: /function (\w+)\((\w+),(\w+)\)\{let \w+=Math\.min\(Math\.max/,
   carry: /function (\w+)\((\w+),(\w+)\)\{let \w+=Math\.max\(0,Math\.min\(/,
+  // The FLIP helpers. They take DOM elements upstream, but only ever ask a Set
+  // whether it holds one and index an array with it, so plain numbers drive
+  // them just as well.
+  computeDelta: /function (\w+)\((\w+),(\w+),(\w+)\)\{let \w+=\w+\[\w+\],\w+=\w+\[\w+\];return ?!\w+\|\|!\w+\?\{dx:0,dy:0\}/,
+  findNearestAnchor: /function (\w+)\((\w+),(\w+),(\w+),(\w+)="backward-first"\)/,
+  resolveExitingAnchors: /function (\w+)\((\w+),(\w+),(\w+),(\w+)\)\{let \w+=new Set\(\w+\.filter\(/,
+  replacedRuns: /function (\w+)\((\w+),(\w+)\)\{let \w+=\[\],\w+=\[\],\w+=\(\)=>\{/,
 };
 
 async function loadInternals() {
@@ -472,6 +479,93 @@ function springSection() {
   });
 }
 
+// Layouts and identity lists chosen so the anchor search has to look both ways,
+// run off both ends, and find nothing at all.
+const ANCHOR_CASES = [
+  { ids: ["a", "b", "c", "d", "e"], persisting: ["a", "e"] },
+  { ids: ["a", "b", "c", "d", "e"], persisting: ["c"] },
+  { ids: ["a", "b", "c", "d", "e"], persisting: [] },
+  { ids: ["a", "b", "c", "d", "e"], persisting: ["a", "b", "c", "d", "e"] },
+  { ids: ["a"], persisting: ["a"] },
+  { ids: ["a"], persisting: [] },
+  { ids: [], persisting: [] },
+  { ids: ["x", "y", "x2", "y2", "z", "w"], persisting: ["y2", "w"] },
+];
+
+const EXITING_CASES = [
+  { oldIds: ["a", "b", "c", "d"], exiting: [1, 2], newIds: ["a", "d"] },
+  { oldIds: ["a", "b", "c", "d"], exiting: [0], newIds: ["b", "c", "d"] },
+  { oldIds: ["a", "b", "c", "d"], exiting: [3], newIds: ["a", "b", "c"] },
+  { oldIds: ["a", "b", "c", "d"], exiting: [0, 1, 2, 3], newIds: [] },
+  { oldIds: ["a", "b", "c", "d"], exiting: [1], newIds: ["a", "c", "d"] },
+  // An identity that is in the new value but is also leaving, which is what a
+  // segment already part way out looks like.
+  { oldIds: ["a", "b", "c"], exiting: [1], newIds: ["a", "b", "c"] },
+];
+
+const RUN_CASES = [
+  { count: 10, members: [] },
+  { count: 10, members: [0, 1, 2, 3, 4] },
+  { count: 10, members: [0, 1, 2, 3, 4, 5] },
+  { count: 10, members: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] },
+  { count: 10, members: [0, 1, 2, 4, 5, 6, 7, 8, 9] },
+  { count: 14, members: [0, 1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 13] },
+  { count: 6, members: [0, 1, 2, 3, 4, 5] },
+  { count: 5, members: [0, 1, 2, 3, 4] },
+];
+
+function anchorSection() {
+  const nearest = [];
+  for (const { ids, persisting } of ANCHOR_CASES) {
+    for (const order of ["backward-first", "forward-first"]) {
+      for (let index = 0; index <= ids.length; index += 1) {
+        nearest.push({
+          ids,
+          persisting,
+          order,
+          index,
+          anchor: internals.findNearestAnchor(index, ids, new Set(persisting), order) ?? null,
+        });
+      }
+    }
+  }
+
+  const exiting = EXITING_CASES.map((testCase) => {
+    const indices = testCase.oldIds.map((_, index) => index);
+    const resolved = internals.resolveExitingAnchors(
+      indices,
+      new Set(testCase.exiting),
+      testCase.oldIds,
+      new Set(testCase.newIds),
+    );
+    const anchors = {};
+    for (const [index, anchor] of resolved) {
+      if (anchor !== null) anchors[index] = anchor;
+    }
+    return { ...testCase, anchors };
+  });
+
+  const runs = RUN_CASES.map((testCase) => ({
+    ...testCase,
+    runs: internals.replacedRuns(
+      Array.from({ length: testCase.count }, (_, i) => i),
+      new Set(testCase.members),
+    ),
+  }));
+
+  // A pair of layouts with a segment present in one, the other, both or
+  // neither, since "neither" is the case that has to answer zero rather than
+  // refuse.
+  const deltas = [];
+  const previous = { a: { x: 10, y: 0 }, b: { x: 30, y: 0 }, c: { x: 50, y: 20 } };
+  const current = { a: { x: 0, y: 0 }, b: { x: 25, y: 4 }, d: { x: 70, y: 20 } };
+  for (const id of ["a", "b", "c", "d", "missing"]) {
+    deltas.push({ id, delta: internals.computeDelta(previous, current, id) });
+  }
+
+  return { nearest, exiting, runs, deltas, previous, current };
+}
+
 function numberRulesSection() {
   return {
     isNumericWord: NUMERIC_TOKENS.map((token) => ({
@@ -535,6 +629,7 @@ const goldens = {
   numberFormatting: numberFormattingSection(),
   easing: easingSection(),
   spring: springSection(),
+  anchors: anchorSection(),
   segmentNumber: segmentNumberSection(),
 };
 

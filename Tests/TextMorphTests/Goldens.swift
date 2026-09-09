@@ -15,6 +15,7 @@ struct Goldens: Decodable {
     let numberFormatting: [GoldenFormatCase]
     let easing: GoldenEasing
     let spring: [GoldenSpringCase]
+    let anchors: GoldenAnchors
     let segmentNumber: GoldenSegmentNumber
 }
 
@@ -137,6 +138,56 @@ enum GoldenExactDouble: Decodable, Equatable {
         case .negativeZero: -0.0
         }
     }
+}
+
+/// The FLIP helpers, lifted out of the published bundle and driven with plain
+/// numbers where upstream passes DOM elements.
+struct GoldenAnchors: Decodable {
+    struct NearestCase: Decodable {
+        let ids: [String]
+        let persisting: [String]
+        /// "backward-first" or "forward-first".
+        let order: String
+        let index: Int
+        let anchor: String?
+    }
+
+    struct ExitingCase: Decodable {
+        let oldIds: [String]
+        let exiting: [Int]
+        let newIds: [String]
+        /// Keyed by the leaving segment's index, as a string, because JSON has
+        /// no integer keys.
+        let anchors: [String: String]
+    }
+
+    struct RunCase: Decodable {
+        let count: Int
+        let members: [Int]
+        let runs: [[Int]]
+    }
+
+    struct DeltaCase: Decodable {
+        let id: String
+        let delta: GoldenDelta
+    }
+
+    struct GoldenDelta: Decodable, Equatable {
+        let dx: Double
+        let dy: Double
+    }
+
+    struct GoldenPoint: Decodable {
+        let x: Double
+        let y: Double
+    }
+
+    let nearest: [NearestCase]
+    let exiting: [ExitingCase]
+    let runs: [RunCase]
+    let deltas: [DeltaCase]
+    let previous: [String: GoldenPoint]
+    let current: [String: GoldenPoint]
 }
 
 /// A segment as upstream reports it, with minted identities canonicalised to
