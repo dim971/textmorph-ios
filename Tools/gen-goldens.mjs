@@ -192,6 +192,112 @@ function segmentTextSection() {
   );
 }
 
+// Every ordered pair of these is recorded, both with numbers on and off. Chosen
+// so the sweep reaches every branch of the diff: a word surviving, a word
+// moving, a word becoming another word, a number changing magnitude, a value
+// emptying and filling, a line break appearing, and the multi-segment word
+// ("3.5 km/h") that upstream indexes a per-character subsequence into.
+const DIFF_CORPUS = [
+  "",
+  "a",
+  "balance",
+  "Total",
+  "Total balance",
+  "balance Total",
+  "the quick brown fox",
+  "the brown fox",
+  "the quick brown fox jumps over the lazy dog",
+  "1204",
+  "1,204",
+  "$1,204",
+  "$1,318",
+  "999,999",
+  "1,000,000",
+  "3.5 km/h",
+  "980 MB",
+  "1.2 GB",
+  "hello  double",
+  "a\nb",
+  "one two\nthree four",
+  "12% of 1,000",
+];
+
+// The caret path needs a value holding exactly one number, so these are pairs a
+// numeric field produces rather than arbitrary values.
+const DIFF_CURSOR_CASES = [
+  { old: "", new: "1", cursor: 1 },
+  { old: "1", new: "12", cursor: 2 },
+  { old: "123", new: "1,234", cursor: 5 },
+  { old: "1,234", new: "123", cursor: 3 },
+  { old: "$120", new: "$1200", cursor: 5 },
+  { old: "Total 120", new: "Total 1200", cursor: 10 },
+  { old: "120", new: "130", cursor: 2 },
+  { old: "1.50", new: "1.55", cursor: 4 },
+];
+
+function serialiseSplits(splits, rename) {
+  const out = {};
+  for (const [id, segments] of splits) {
+    out[rename(id)] = segments.map((segment) => ({
+      id: rename(segment.id),
+      string: segment.string,
+    }));
+  }
+  return out;
+}
+
+/**
+ * One diff, recorded three ways: the identities as strings, which are
+ * deterministic except for the minted numeric ones; the alignment against the
+ * old segmentation, which is not; and the splits map.
+ */
+function diffCase(before, after, numbers, cursorIndex) {
+  const previous = torph.segmentText(before, "en", numbers);
+  const result = torph.diffSegments(previous, after, "en", { numbers, cursorIndex });
+
+  // Canonicalise across both sides at once, so an identity inherited from the
+  // old segmentation gets the same name in both.
+  const seen = new Map();
+  const rename = (id) => {
+    if (!id.startsWith(MINTED_PREFIX)) return id;
+    if (!seen.has(id)) seen.set(id, `#${seen.size}`);
+    return seen.get(id);
+  };
+  for (const segment of previous) rename(segment.id);
+
+  const positions = new Map(previous.map((segment, index) => [segment.id, index]));
+
+  return {
+    before,
+    after,
+    numbers,
+    cursor: cursorIndex ?? null,
+    previous: previous.map((segment) => rename(segment.id)),
+    segments: result.segments.map((segment) =>
+      segment.kind === undefined
+        ? { id: rename(segment.id), string: segment.string }
+        : { id: rename(segment.id), string: segment.string, kind: segment.kind },
+    ),
+    alignment: result.segments.map((segment) => positions.get(segment.id) ?? null),
+    splits: serialiseSplits(result.splits, rename),
+  };
+}
+
+function diffSegmentsSection() {
+  const cases = [];
+  for (const before of DIFF_CORPUS) {
+    for (const after of DIFF_CORPUS) {
+      for (const numbers of [true, false]) {
+        cases.push(diffCase(before, after, numbers, undefined));
+      }
+    }
+  }
+  for (const testCase of DIFF_CURSOR_CASES) {
+    cases.push(diffCase(testCase.old, testCase.new, true, testCase.cursor));
+  }
+  return cases;
+}
+
 function numberRulesSection() {
   return {
     isNumericWord: NUMERIC_TOKENS.map((token) => ({
@@ -250,6 +356,7 @@ const goldens = {
   torphVersion: TORPH_VERSION,
   nodeUnicodeVersion: process.versions.unicode,
   segmentText: segmentTextSection(),
+  diffSegments: diffSegmentsSection(),
   numberRules: numberRulesSection(),
   segmentNumber: segmentNumberSection(),
 };

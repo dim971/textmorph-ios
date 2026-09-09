@@ -10,6 +10,7 @@ struct Goldens: Decodable {
     let torphVersion: String
     let nodeUnicodeVersion: String
     let segmentText: [GoldenSegmentTextCase]
+    let diffSegments: [GoldenDiffCase]
     let numberRules: GoldenNumberRules
     let segmentNumber: GoldenSegmentNumber
 }
@@ -26,6 +27,29 @@ struct GoldenSegmentTextCase: Decodable {
     /// difference lives in the fixture rather than in a comment.
     let diverges: String?
     let segments: [GoldenSegment]
+}
+
+/// How upstream matches one value against the segmentation of another.
+struct GoldenDiffCase: Decodable {
+    let before: String
+    let after: String
+    let numbers: Bool
+    let cursor: Int?
+    /// The identities of the old segmentation, in order, so the case is
+    /// self-contained: the port builds the same starting point rather than
+    /// being trusted to.
+    let previous: [String]
+    let segments: [GoldenSegment]
+    /// The index in the old segmentation each new segment carries on from.
+    let alignment: [Int?]
+    /// Old spans that were cut finer to make the match.
+    let splits: [String: [GoldenSplitSegment]]
+}
+
+/// A segment inside a split, which never carries a kind.
+struct GoldenSplitSegment: Decodable, Equatable {
+    let id: String
+    let string: String
 }
 
 /// A segment as upstream reports it, with minted identities canonicalised to

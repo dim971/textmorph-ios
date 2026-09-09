@@ -88,6 +88,37 @@ enum NumberRules {
         isDigit(character) ? .digit : .symbol
     }
 
+    /// The same classification for a segment whose text may be more than one
+    /// character, which is what an older non-numeric segmentation of the same
+    /// word can hand over.
+    ///
+    /// Upstream calls the single-character test on that string, and JavaScript
+    /// compares strings lexicographically rather than rejecting the call: `"12"`
+    /// reads as a digit because `"1"` sorts between `"0"` and `"9"`, while
+    /// `"km"` does not because `"k"` sorts after `"9"`. Reproduced rather than
+    /// corrected, because it decides which segments slide.
+    static func classifyKind(text: String) -> SegmentKind {
+        isDigitLexicographically(text) ? .digit : .symbol
+    }
+
+    /// JavaScript's `text >= "0" && text <= "9"`, on UTF-16 code units.
+    ///
+    /// A code-unit-wise comparison where, if one value is a prefix of the
+    /// other, the shorter sorts first. Both bounds are a single unit, so:
+    ///
+    /// - `text >= "0"` holds when `text` is not empty and its first unit is not
+    ///   below `"0"`, since a longer value beginning with `"0"` sorts after it.
+    /// - `text <= "9"` holds when `text` is empty, or its first unit is below
+    ///   `"9"`, or it is exactly `"9"`. `"9x"` sorts *after* `"9"` and so fails,
+    ///   while `"12"` and even `"0x1f"` pass.
+    private static func isDigitLexicographically(_ text: String) -> Bool {
+        var units = text.utf16.makeIterator()
+        guard let first = units.next() else { return false }
+        guard first >= 0x30 else { return false }
+        if first < 0x39 { return true }
+        return first == 0x39 && units.next() == nil
+    }
+
     private static func isAffix(_ character: Character, _ set: Set<Character>) -> Bool {
         set.contains(character) || isCurrency(character)
     }
