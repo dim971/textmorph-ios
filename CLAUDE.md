@@ -49,8 +49,17 @@ these are the three that shape the whole port.
 - **Character splitting.** Upstream uses `String.prototype.split("")`, which
   cuts on UTF-16 code units and therefore halves an astral character into two
   surrogates. Swift cannot hold an unpaired surrogate. The port splits on
-  extended grapheme clusters. This changes ids and the character diff only for
-  words containing an astral character.
+  extended grapheme clusters, **by the rules in `Core`** rather than by
+  `Array(String)`: Swift's `Character` is a cluster too, but by whichever
+  Unicode version the running OS carries, so it would differ between devices
+  and from the twin. Use `String.graphemes`, never `Array(word)`. This changes
+  ids and the character diff only for words containing an astral character or a
+  combining mark.
+- **The number path goes the other way.** `isNumericWord` and `hasDigit` walk
+  UTF-16 code units, which is upstream's unit and the twin's, because there the
+  two answers genuinely differ: an astral currency symbol is one cluster and two
+  code units, and a digit followed by a combining mark is one cluster that is
+  not a digit. That also means nothing astral can reach `segmentNumber`.
 - **Critical damping.** Upstream's spring is analytic, and at a damping ratio
   of exactly 1 its overdamped branch divides by zero: `springPosition` returns
   NaN, and because `NaN > precision` is false, `computeDuration` concludes the
