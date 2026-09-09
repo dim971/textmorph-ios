@@ -1,23 +1,38 @@
 import SwiftUI
 import TextMorph
 
-/// A balance, which is what place-value morphing is for.
+private let walletStates = [
+    "Connect wallet",
+    "Connecting\u{2026}",
+    "0xd55a\u{2026}d2685",
+    "lochie.eth"
+]
+
+/// A connect button that becomes an address and then a name.
 struct WalletDemo: View {
     @Environment(ShowcaseSettings.self) private var settings
-    @State private var balance = 1204.0
 
     var body: some View {
-        Tappable(hint: "Tap to spend a little") {
-            HStack(alignment: .firstTextBaseline, spacing: 2) {
-                Text("$")
-                    .font(.system(size: 24, weight: .medium))
-                    .foregroundStyle(.secondary)
-                TextMorph(balance, options: settings.options(decimals: 2))
-                    .textMorphFont(.system(size: 40, weight: .semibold, design: .rounded))
+        Cycling(count: walletStates.count, interval: 1.8) { index in
+            Stage {
+                Chip {
+                    HStack(spacing: index >= 2 ? 8 : 0) {
+                        // An avatar appears once there is an account to put one
+                        // on, which is what makes the pill grow from the left as
+                        // well as the right. Upstream loads a photograph; a disc
+                        // is enough to show the pill absorbing it.
+                        if index >= 2 {
+                            Circle()
+                                .fill(Color.accentColor)
+                                .frame(width: 20, height: 20)
+                                .transition(.scale.combined(with: .opacity))
+                        }
+                        TextMorph(walletStates[index], options: settings.options)
+                            .textMorphFont(stageFont(size: 18))
+                    }
+                    .animation(.easeOut(duration: 0.2), value: index >= 2)
+                }
             }
-        } advance: {
-            balance = (balance - Double(Int.random(in: 80 ... 400))).rounded()
-            if balance < 100 { balance = 1204 }
         }
     }
 
@@ -25,13 +40,12 @@ struct WalletDemo: View {
         Demo(
             id: "wallet",
             name: "Wallet",
-            summary: "The one that makes the case for the whole library. 1,204 becoming 1,318 "
-                + "rolls the hundreds and the tens and leaves the thousands alone, because a "
-                + "digit's identity is its column rather than its position in the string.",
-            capability: "place-value alignment",
+            summary: "Connect wallet, then an ellipsis while it connects, then a truncated "
+                + "address, then a name. Four states with almost nothing in common, so most "
+                + "of it is a group replacement, and the pill's width carries the whole way.",
+            capability: "a chain of unrelated values, and the pill that holds them",
             code: """
-            TextMorph(balance, options: TextMorphOptions(decimals: 2))
-                .textMorphFont(.system(size: 40, weight: .semibold, design: .rounded))
+            Chip { TextMorph(state) }
             """
         ) { WalletDemo() }
     }

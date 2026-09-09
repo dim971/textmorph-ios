@@ -1,17 +1,24 @@
 import SwiftUI
 import TextMorph
 
-/// A quantity and its unit, which change together.
+private let glued = ["819K", "990K", "9.9M", "19.4M"]
+private let spaced = ["910 KB", "1.2 MB", "12 MB", "1.25 GB"]
+
+/// A quantity glued to its unit, beside one separated from it.
 struct UnitsDemo: View {
     @Environment(ShowcaseSettings.self) private var settings
-    @State private var cycle = Cycle(["1.2 GB", "980 MB", "412 MB", "8.4 GB", "64 KB"])
 
     var body: some View {
-        Tappable(hint: "Tap for the next size") {
-            TextMorph(cycle.current, options: settings.options)
-                .textMorphFont(.system(size: 34, weight: .medium))
-        } advance: {
-            cycle.advance()
+        Cycling(count: glued.count, interval: 1.6) { index in
+            Stage {
+                SplitRow(separator: "-") {
+                    TextMorph(glued[index], options: settings.options)
+                        .textMorphFont(stageFont(size: 30))
+                } right: {
+                    TextMorph(spaced[index], options: settings.options)
+                        .textMorphFont(stageFont(size: 30))
+                }
+            }
         }
     }
 
@@ -19,12 +26,14 @@ struct UnitsDemo: View {
         Demo(
             id: "units",
             name: "Units",
-            summary: "Two words, one of them a quantity and one of them not. The quantity morphs "
-                + "by place value and the unit morphs by character, in the same value, because "
-                + "the numeric pass runs over the finished segmentation rather than inside it.",
-            capability: "a numeric word beside a plain one",
+            summary: "819K on the left, 910 KB on the right, and the space between the number "
+                + "and the unit is the whole difference. Glued, the token is one word and the "
+                + "letter travels with the digits; separated, it is two words and the unit "
+                + "morphs on its own while the quantity rolls by place value.",
+            capability: "a space deciding whether a unit belongs to the number",
             code: """
-            TextMorph("\\(amount) \\(unit)")
+            TextMorph("9.9M")     // one word
+            TextMorph("12 MB")    // two, and only the first rolls
             """
         ) { UnitsDemo() }
     }

@@ -1,21 +1,20 @@
 import SwiftUI
 import TextMorph
 
-/// A row of labels that reorders.
+private let filters = ["All Markets", "Markets (1)", "Markets (2)", "Markets (3)"]
+
+/// A filter pill that gains a count.
 struct FiltersDemo: View {
     @Environment(ShowcaseSettings.self) private var settings
-    @State private var cycle = Cycle([
-        "Unread  Flagged  Recent",
-        "Recent  Unread  Flagged",
-        "Flagged  Recent  Unread"
-    ])
 
     var body: some View {
-        Tappable(hint: "Tap to reorder") {
-            TextMorph(cycle.current, options: settings.options)
-                .textMorphFont(.textStyle(.headline))
-        } advance: {
-            cycle.advance()
+        Cycling(count: filters.count, interval: 1.5) { index in
+            Stage {
+                Chip {
+                    TextMorph(filters[index], options: settings.options)
+                        .textMorphFont(stageFont(size: 20))
+                }
+            }
         }
     }
 
@@ -23,13 +22,12 @@ struct FiltersDemo: View {
         Demo(
             id: "filters",
             name: "Filters",
-            summary: "The same words in a different order. A word that moved keeps its identity "
-                + "and travels whole, rather than being cut into characters that fly separately. "
-                + "A subsequence cannot see a reordering, so a second pass looks for it.",
-            capability: "the exact-match reordering pass of the diff",
+            summary: "All Markets becoming Markets (1). The word Markets survives and slides "
+                + "left as All leaves, and the digit inside the brackets rolls on its own "
+                + "because a bracketed number is still a quantity.",
+            capability: "a word leaving beside a quantity that rolls",
             code: """
-            TextMorph(filters.joined(separator: "  "))
-                .textMorphFont(.textStyle(.headline))
+            Chip { TextMorph("Markets (\\(count))") }
             """
         ) { FiltersDemo() }
     }

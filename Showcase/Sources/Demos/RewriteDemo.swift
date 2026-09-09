@@ -1,21 +1,38 @@
 import SwiftUI
 import TextMorph
 
-/// A sentence replaced outright.
+private let tones = [
+    ("Direct", "Running late, be there soon."),
+    ("Friendly", "Running a bit behind, I'll be there soon."),
+    ("Professional", "I'm running a little behind, should be there soon.")
+]
+
+/// The same message, rewritten in another tone.
 struct RewriteDemo: View {
     @Environment(ShowcaseSettings.self) private var settings
-    @State private var cycle = Cycle([
-        "the quick brown fox",
-        "a slow green turtle",
-        "one lazy grey cat"
-    ])
 
     var body: some View {
-        Tappable(hint: "Tap to rewrite") {
-            TextMorph(cycle.current, options: settings.options)
-                .textMorphFont(.textStyle(.title2))
-        } advance: {
-            cycle.advance()
+        Cycling(count: tones.count, interval: 2.6) { index in
+            let (tone, message) = tones[index]
+            Stage(caption: "tone") {
+                TextMorph(wrap(message, 26), options: settings.options)
+                    .textMorphFont(stageFont(size: 17, weight: .regular))
+                    .multilineTextAlignment(.leading)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+                    .background(
+                        Color(uiColor: .tertiarySystemFill),
+                        in: .rect(
+                            topLeadingRadius: 16,
+                            bottomLeadingRadius: 0,
+                            bottomTrailingRadius: 16,
+                            topTrailingRadius: 16
+                        )
+                    )
+                TextMorph(tone, options: settings.options)
+                    .textMorphFont(stageFont(size: 14))
+                    .textMorphColour(Color.accentColor)
+            }
         }
     }
 
@@ -23,13 +40,14 @@ struct RewriteDemo: View {
         Demo(
             id: "rewrite",
             name: "Rewrite",
-            summary: "Nothing survives, so the old sentence recedes as one shape rather than as "
-                + "twenty characters each going its own way. Six adjacent characters all leaving "
-                + "is where that switch happens.",
-            capability: "the group replacement path",
+            summary: "A message rewritten in another tone, with the tone's own name morphing "
+                + "under it. Almost nothing survives between Direct and Professional, so most "
+                + "of the bubble is a group replacement: six or more adjacent characters all "
+                + "leaving stop being characters and collapse as one shape.",
+            capability: "the group replacement path, over several lines",
             code: """
-            TextMorph(sentence)
-                .textMorphFont(.textStyle(.title2))
+            TextMorph(wrap(body, 26))
+            TextMorph(tone)
             """
         ) { RewriteDemo() }
     }
