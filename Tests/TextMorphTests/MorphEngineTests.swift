@@ -232,7 +232,7 @@ struct MorphEngineTests {
     // MARK: - switched off
 
     @Test("Disabled, a value arrives in place and reports nothing")
-    func disabled() {
+    func disabled() throws {
         let engine = engine(TextMorphOptions(disabled: true))
         let log = CallbackLog()
         engine.update(.text("one"), now: start)
@@ -240,8 +240,15 @@ struct MorphEngineTests {
 
         #expect(log.started == 0)
         #expect(log.settled == 0, "upstream fires neither callback on this path")
-        #expect(engine.render(at: start) == nil, "there is nothing to animate")
         #expect(engine.size(at: start).width == 7 * SyntheticMetrics.advance)
+
+        // Still drawn, and still not moving. There is one rendering path, so a
+        // still plan is how "draw this, not moving" is expressed.
+        let render = try #require(engine.render(at: start))
+        #expect(render.isSettled)
+        for state in render.frame.states {
+            #expect(state == .resting)
+        }
     }
 
     @Test("Reduce motion is honoured, unless the caller says not to")
