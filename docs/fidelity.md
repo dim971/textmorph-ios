@@ -111,6 +111,25 @@ That difference is also why the formatting comparison treats the two
 apostrophes as one separator, and asserts the difference is confined to de-CH.
 Anything else CLDR moves will still fail.
 
+**The unit a character is.** Both ports cut a word with the UAX #29 grapheme
+rules in `core` rather than with the platform's own clusters, and that is a
+third choice rather than a compromise. Swift's `Character` and Android's ICU are
+both extended grapheme clusters by whichever Unicode version the running OS
+carries, so the same value could be cut one way on one device and another way on
+the next, and differently again from the twin. The generated tables are pinned to
+one version.
+
+The number path is the exception, and it goes the other way: `isNumericWord` and
+`hasDigit` walk UTF-16 code units, which is upstream's unit, because there the
+two answers genuinely differ. An astral currency symbol is one cluster and two
+code units, so a cluster walk would trim it as an affix and make
+`\u{1ECB0}5` a quantity where upstream does not; and a digit followed by a
+combining mark is one cluster that is not a digit and two units of which the
+first is. Walking units also means no value holding an astral character or a
+combining mark can reach `segmentNumber`, which is why that can go on splitting
+into clusters. `CharacterUnitTests` on one side and `CharacterUnitTest` on the
+other assert the same cases.
+
 ## Two upstream quirks reproduced rather than tidied
 
 Neither is a bug exactly, and both decide what moves.

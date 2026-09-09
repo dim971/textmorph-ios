@@ -46,3 +46,51 @@ struct SegmentTests {
         #expect(Segment(id: "newline-3", string: "\n").isNewline)
     }
 }
+
+/// What a "character" is, and where the two candidate answers differ.
+///
+/// The unit a value is cut into decides identities and so decides what moves,
+/// and there are three plausible units: a UTF-16 code unit, which is
+/// upstream's; a `Character`, which is what the platform's ICU says today; and
+/// an extended grapheme cluster by the rules in `Core`, which is what both
+/// ports use. This suite is the Kotlin twin's, assertion for assertion, so a
+/// port drifting onto a different unit fails here rather than in a golden with
+/// no explanation.
+@Suite("The unit a character is")
+struct CharacterUnitTests {
+    @Test("A word is cut by the ported rules, not by the platform's")
+    func graphemesFollowTheRules() {
+        // A family emoji is one cluster of five scalars and eight code units,
+        // and a combining sequence is one cluster of two. Cutting on code
+        // units would give eight pieces and one and a half emoji.
+        let family = "\u{1F468}\u{200D}\u{1F469}\u{200D}\u{1F467}"
+        #expect(family.graphemes == [family])
+        #expect("e\u{0301}".graphemes == ["e\u{0301}"])
+        #expect("caf\u{00E9}".graphemes == ["c", "a", "f", "\u{00E9}"])
+        #expect("1,204".graphemes == ["1", ",", "2", "0", "4"])
+        #expect("".graphemes.isEmpty)
+
+        // A regional indicator pair is one flag, which is GB12 and GB13 and is
+        // the case a naive scalar walk gets wrong.
+        #expect("\u{1F1EB}\u{1F1F7}".graphemes.count == 1)
+    }
+
+    @Test("A quantity is decided in code units, which is upstream's unit")
+    func numericWordsUseCodeUnits() {
+        #expect(NumberRules.isNumericWord("$1,204"))
+        #expect(NumberRules.isNumericWord("12%"))
+        #expect(!NumberRules.isNumericWord("COVID-19"))
+
+        // U+1ECB0 INDIC SIYAQ RUPEE MARK is a currency symbol in general
+        // category Sc, and it is astral. As one character it would be trimmed
+        // as an affix and this would be a quantity; as the two surrogates
+        // upstream and the Kotlin twin see, neither is in Sc, so it is not.
+        #expect(!NumberRules.isNumericWord("\u{1ECB0}5"))
+        #expect(NumberRules.isCurrency("\u{1ECB0}"), "it is a currency symbol as a character")
+
+        // A combining mark next to a digit, for the same reason in reverse: as
+        // one character it is not a digit at all.
+        #expect(!NumberRules.isNumericWord("1\u{0301}2"))
+        #expect(NumberRules.hasDigit("1\u{0301}2"), "the code unit walk still sees the 1")
+    }
+}

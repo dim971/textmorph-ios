@@ -46,9 +46,20 @@ enum NumberRules {
         return scalar.value >= 0x30 && scalar.value <= 0x39
     }
 
+    /// The same test on one UTF-16 code unit, which is upstream's own unit.
+    static func isDigit(unit: UInt16) -> Bool {
+        unit >= 0x30 && unit <= 0x39
+    }
+
     /// Whether a value holds a digit anywhere.
+    ///
+    /// Over code units rather than over characters, because the two disagree:
+    /// `"1"` followed by a combining acute is one `Character` that is not a
+    /// digit, and two code units of which the first is. Upstream sees the code
+    /// units, the Kotlin twin sees them for free, and this decides which
+    /// pairing path the diff takes, so it is worth the explicit view.
     static func hasDigit(_ value: String) -> Bool {
-        value.contains(where: isDigit)
+        value.utf16.contains { isDigit(unit: $0) }
     }
 
     /// A currency symbol, general category Sc, which upstream matches with `\p{Sc}`.
@@ -57,13 +68,33 @@ enum NumberRules {
         return scalar.properties.generalCategory == .currencySymbol
     }
 
+    /// The same test on one UTF-16 code unit.
+    ///
+    /// A lone surrogate is not a currency symbol, and that is the answer
+    /// upstream and the Kotlin twin both give: an astral currency symbol such
+    /// as U+1ECB0 is two code units, neither of which is in Sc, so it is not an
+    /// affix. Deciding it on the whole scalar instead would make the two ports
+    /// disagree about whether such a token is a quantity at all.
+    static func isCurrency(unit: UInt16) -> Bool {
+        guard let scalar = Unicode.Scalar(UInt32(unit)) else { return false }
+        return scalar.properties.generalCategory == .currencySymbol
+    }
+
     /// What is left of a token once its digits and separators go: `$`, `%`, `()`.
     ///
     /// Two tokens with the same skeleton are the same shape of quantity, which
     /// is what lets the diff pair `$1,204` with `$1,318` in preference to
     /// anything they happen to share characters with.
+    ///
+    /// Over scalars rather than characters, which is what upstream's code-unit
+    /// filter comes to: every digit and every separator here is a single BMP
+    /// unit, so a surrogate pair is always kept whole or dropped whole and the
+    /// two walks cannot produce different strings.
     static func numericSkeleton(_ word: String) -> String {
-        String(word.filter { !isDigit($0) && !coreSeparators.contains($0) })
+        String(String.UnicodeScalarView(word.unicodeScalars.filter { scalar in
+            !(scalar.value >= 0x30 && scalar.value <= 0x39)
+                && !coreSeparatorScalars.contains(scalar)
+        }))
     }
 
     /// Whether a token is a quantity.
@@ -72,24 +103,34 @@ enum NumberRules {
     /// enough, or `COVID-19` and `2024-01-01` would morph by place value.
     /// Affixes are trimmed from both ends, and what is left must start and end
     /// with a digit and hold nothing but digits and core separators.
+    /// Walked in UTF-16 code units, which is upstream's unit and the Kotlin
+    /// twin's. It matters: an astral currency symbol is one `Character` and two
+    /// code units, so a character walk would trim it as an affix where
+    /// upstream does not, and `\u{1ECB0}5` would be a quantity on one platform
+    /// and not on the other. Every member of every set here is a single BMP
+    /// unit, so nothing else changes.
+    ///
+    /// It also means no value holding an astral character or a combining mark
+    /// can reach `segmentNumber`, which is why that can go on splitting into
+    /// characters.
     static func isNumericWord(_ word: String) -> Bool {
-        let characters = Array(word)
+        let units = Array(word.utf16)
         var start = 0
-        var end = characters.count
+        var end = units.count
 
-        while start < end, isAffix(characters[start], prefixCharacters) {
+        while start < end, isAffix(units[start], prefixUnits) {
             start += 1
         }
-        while end > start, isAffix(characters[end - 1], suffixCharacters) {
+        while end > start, isAffix(units[end - 1], suffixUnits) {
             end -= 1
         }
 
         if start >= end { return false }
-        if !isDigit(characters[start]) || !isDigit(characters[end - 1]) { return false }
+        if !isDigit(unit: units[start]) || !isDigit(unit: units[end - 1]) { return false }
 
         for index in start ..< end {
-            let character = characters[index]
-            if !isDigit(character), !coreSeparators.contains(character) { return false }
+            let unit = units[index]
+            if !isDigit(unit: unit), !coreSeparatorUnits.contains(unit) { return false }
         }
 
         return true
@@ -132,9 +173,21 @@ enum NumberRules {
         return first == 0x39 && units.next() == nil
     }
 
-    private static func isAffix(_ character: Character, _ set: Set<Character>) -> Bool {
-        set.contains(character) || isCurrency(character)
+    private static func isAffix(_ unit: UInt16, _ set: Set<UInt16>) -> Bool {
+        set.contains(unit) || isCurrency(unit: unit)
     }
+
+    /// The three sets again, as code units and as scalars.
+    ///
+    /// Derived from the character sets rather than written out twice, so there
+    /// is still one place to change what counts as a separator. Every member is
+    /// a single BMP unit, which `coreSeparatorUnits` would silently break if one
+    /// ever were not, so it is worth knowing that the sets are the same size.
+    static let coreSeparatorUnits: Set<UInt16> = Set(coreSeparators.flatMap(\.utf16))
+    static let coreSeparatorScalars: Set<Unicode.Scalar> =
+        Set(coreSeparators.flatMap(\.unicodeScalars))
+    private static let prefixUnits: Set<UInt16> = Set(prefixCharacters.flatMap(\.utf16))
+    private static let suffixUnits: Set<UInt16> = Set(suffixCharacters.flatMap(\.utf16))
 }
 
 // MARK: - the locale's decimal separator

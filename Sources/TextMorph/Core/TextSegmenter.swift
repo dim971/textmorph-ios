@@ -189,7 +189,7 @@ private extension TextSegmenter {
     }
 }
 
-private extension String {
+extension String {
     /// A run of UTF-16 units as a value, or nil if the run is not well formed.
     ///
     /// A boundary never falls inside a surrogate pair, so this cannot fail in

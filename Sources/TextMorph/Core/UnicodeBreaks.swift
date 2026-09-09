@@ -176,3 +176,32 @@ private extension UnicodeBreaks {
         return count
     }
 }
+
+extension String {
+    /// The value's extended grapheme clusters, by the ported UAX #29 rules.
+    ///
+    /// Both ports split a "character" this way rather than on UTF-16 code
+    /// units, which is upstream's unit: Swift cannot hold an unpaired
+    /// surrogate, so the deviation is forced here and matched on Android.
+    ///
+    /// The rules rather than `Array(self)`, and that is the point of this
+    /// existing at all. Swift's `Character` is an extended grapheme cluster
+    /// too, but by whichever Unicode version the running OS carries, so the
+    /// same value could be cut one way on one device and another way on the
+    /// next, and differently again from the Kotlin twin. These rules are
+    /// pinned to one version in a generated table.
+    var graphemes: [String] {
+        if isEmpty { return [] }
+        let boundaries = UnicodeBreaks.graphemeBoundaries(of: self)
+        let units = Array(utf16)
+        var out: [String] = []
+        out.reserveCapacity(boundaries.count - 1)
+        for position in 0 ..< boundaries.count - 1 {
+            let start = boundaries[position].value
+            let end = boundaries[position + 1].value
+            guard let text = String(decoding: units[start ..< end]) else { continue }
+            out.append(text)
+        }
+        return out
+    }
+}

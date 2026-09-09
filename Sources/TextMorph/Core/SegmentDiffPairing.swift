@@ -159,8 +159,10 @@ extension SegmentDiff {
 
     static func characterSimilarity(_ a: String, _ b: String) -> Double {
         if a.isEmpty || b.isEmpty { return 0 }
-        let (matched, _) = lcsIndices(Array(a), Array(b))
-        return Double(matched.count) / Double(max(a.count, b.count))
+        let first = a.graphemes
+        let second = b.graphemes
+        let (matched, _) = lcsIndices(first, second)
+        return Double(matched.count) / Double(max(first.count, second.count))
     }
 }
 

@@ -94,7 +94,7 @@ struct Builder {
             if willSplit, oldWord.segments.count == 1 {
                 // About to be cut into per-character spans.
                 let identity = oldWord.segments[0].id
-                for position in 0 ..< oldWord.word.count {
+                for position in 0 ..< oldWord.word.graphemes.count {
                     allocator.reserve("\(identity):\(position)")
                 }
             } else {
@@ -165,13 +165,14 @@ struct Builder {
     private mutating func splitIfWhole(
         _ oldWord: (word: String, segments: [Segment])
     ) -> [Segment] {
-        guard oldWord.segments.count == 1, oldWord.word.count > 1 else {
+        let characters = oldWord.word.graphemes
+        guard oldWord.segments.count == 1, characters.count > 1 else {
             return oldWord.segments
         }
 
         let identity = oldWord.segments[0].id
-        let characterSegments = oldWord.word.enumerated().map { position, character in
-            Segment(id: "\(identity):\(position)", string: String(character))
+        let characterSegments = characters.enumerated().map { position, character in
+            Segment(id: "\(identity):\(position)", string: character)
         }
         splits[identity] = characterSegments
         return characterSegments
@@ -185,8 +186,8 @@ struct Builder {
     ) -> [Segment] {
         let oldCharacterSegments = splitIfWhole(oldWord)
 
-        let oldCharacters = Array(oldWord.word)
-        let newCharacters = Array(newWord)
+        let oldCharacters = oldWord.word.graphemes
+        let newCharacters = newWord.graphemes
         let (oldLcs, newLcs) = lcsIndices(oldCharacters, newCharacters)
 
         // Upstream indexes the per-character subsequence result into the
