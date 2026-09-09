@@ -58,10 +58,10 @@ struct RangeShoveDemo: View {
             id: "range",
             name: "Range shove",
             summary: "Two pills on one track, each morphing its own value, and each in the "
-                + "other's way. Drag them together and the lower one lifts clear so both stay "
-                + "readable. Upstream leans them apart about their tails instead, solving a "
-                + "collision test every frame; the morph is the same either way, and this is "
-                + "the part of the card that is ours rather than theirs.",
+                + "other's way. Drag them together and they pivot apart about their tail tips, "
+                + "because a tail stays pinned to its thumb and leaning is the only way out of "
+                + "an overlap. How far they lean is found by bisecting on the daylight between "
+                + "their bodies, which is upstream's own rule and the whole of this card.",
             capability: "two morphs competing for the same space",
             code: """
             RangeTrack(fractions: [lo, hi], bubbles: [
