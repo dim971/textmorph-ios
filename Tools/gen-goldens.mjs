@@ -533,6 +533,8 @@ const goldens = {
   diffSegments: diffSegmentsSection(),
   numberRules: numberRulesSection(),
   numberFormatting: numberFormattingSection(),
+  easing: easingSection(),
+  spring: springSection(),
   segmentNumber: segmentNumberSection(),
 };
 

@@ -13,6 +13,8 @@ struct Goldens: Decodable {
     let diffSegments: [GoldenDiffCase]
     let numberRules: GoldenNumberRules
     let numberFormatting: [GoldenFormatCase]
+    let easing: GoldenEasing
+    let spring: [GoldenSpringCase]
     let segmentNumber: GoldenSegmentNumber
 }
 

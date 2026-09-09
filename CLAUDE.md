@@ -15,8 +15,18 @@ public view for the same reason.
 
 `Tests/TextMorphTests/Fixtures/goldens.json` is generated from the published
 npm package by `Tools/gen-goldens.mjs`. The tests rebuild each case through the
-Swift engine and compare. There is no tolerance and there is not meant to be
-one.
+Swift engine and compare.
+
+There is exactly one tolerance in the whole suite, and it is worth knowing
+where. The spring's *position* is compared to within the ulp of one, because
+`exp`, `cos` and `sin` go through Darwin's libm where V8 goes through fdlibm,
+and 4 of the 357 sampled positions differ in the last bit. The bound is tied to
+one rather than to the value because every branch computes `1 - something`.
+Nothing else has any tolerance, and in particular the spring's *duration* does
+not: that number is a fraction of every fade window in the library, and it
+agrees exactly across the whole parameter matrix. That is a measurement, not a
+guarantee, which is why the matrix includes the near-critical damping ratios
+and a precision sweep.
 
 If a golden fails, the port has drifted. Find out why. Do not widen anything,
 do not regenerate the fixtures to make a failure go away. Regenerating is only
