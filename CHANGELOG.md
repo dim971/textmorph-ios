@@ -6,6 +6,20 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- **A morphing word is cut with the ported UAX #29 grapheme rules**, not with
+  Swift's `Character`. Both are extended grapheme clusters, but `Character`
+  follows whichever Unicode version the running OS carries, so the same value
+  could be cut one way on one device and another way on the next, and
+  differently again from the Android twin, for any value holding an emoji or a
+  combining mark. Identities change only for such values.
+- **A quantity is decided in UTF-16 code units**, which is upstream's unit and
+  the twin's. `\u{1ECB0}5`, whose prefix is an astral currency symbol, is no
+  longer read as a quantity, because neither of its two code units is in general
+  category Sc; and `hasDigit` now sees the digit in a digit followed by a
+  combining mark, which as one `Character` it did not.
+
 ## [0.1.0]
 
 First release. A SwiftUI port of [Torph](https://torph.lochie.me) 0.1.3.

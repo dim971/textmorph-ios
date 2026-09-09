@@ -35,8 +35,9 @@ be explainable.
 
 ## Deliberate deviations from upstream
 
-Three, all forced, all with their own fixture section marked as deviating. They
-are listed in full in `docs/fidelity.md`.
+All forced, and each recorded in the fixtures or asserted exactly in a test
+rather than only in a comment. They are listed in full in `docs/fidelity.md`;
+these are the three that shape the whole port.
 
 - **Minted numeric ids.** Upstream mints them from a module-global counter,
   which is unusable under Swift 6 strict concurrency and is not reproducible

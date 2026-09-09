@@ -147,7 +147,7 @@ the published `torph@0.1.3` package, plus the 2710 cases of Unicode's own UAX
 #29 conformance suite. There is one tolerance in the whole suite and
 [docs/fidelity.md](docs/fidelity.md) says exactly where it is and why.
 
-Four deviations are deliberate, and one of them is a fix: at a damping ratio of
+The deviations are deliberate, and one of them is a fix: at a damping ratio of
 exactly one, upstream's spring divides by zero and reports a duration of minus
 zero, so `damping: 20` at the default stiffness animates nothing. This port
 adds the analytic critical branch, identically on both platforms.

@@ -60,8 +60,8 @@ Nothing else anywhere has a tolerance.
 
 ## Deliberate deviations
 
-Five, all forced or fixed, all recorded in the fixtures rather than only in a
-comment.
+All forced or fixed, all recorded in the fixtures or asserted exactly in a test
+rather than only in a comment.
 
 **Minted numeric identities.** Upstream mints them from a module-global counter,
 which Swift 6 strict concurrency will not allow and which is not reproducible
