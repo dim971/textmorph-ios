@@ -6,6 +6,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- **The showcase now covers torph's examples page card for card.** Twenty demos
+  that were missing, and thirteen brought in line with upstream's own values,
+  intervals and eases, read out of its site sources rather than invented: the
+  two pages can be scrolled side by side. Thirty-five in all, the last two
+  being the first render and the empty transition, which upstream does not
+  show. The interface around each morph is written for this platform rather
+  than reproduced, and the catalogue says which differences are deliberate.
+
 ### Changed
 
 - **A morphing word is cut with the ported UAX #29 grapheme rules**, not with

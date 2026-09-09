@@ -154,9 +154,16 @@ adds the analytic critical branch, identically on both platforms.
 
 ## Showcase app
 
-Fifteen demos, each naming the one capability of the engine it exists to show,
-plus a playground where an option can be watched on and off over the same
+Thirty-five demos, each naming the one capability of the engine it exists to
+show, plus a playground where an option can be watched on and off over the same
 value.
+
+Thirty-three of them are torph's own examples, in its order, with its values,
+intervals and eases: the two pages can be scrolled side by side. The interface
+around each morph is written for this platform rather than reproduced, and
+[the catalogue](Showcase/Sources/Catalog/Catalog.swift) says so. The last two
+are ours: the first value a view renders, which never animates, and a value
+emptying out.
 
 <p align="center">
 <img src="docs/images/catalog.png" width="230" alt="Catalog">

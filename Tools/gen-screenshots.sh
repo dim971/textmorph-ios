@@ -56,10 +56,11 @@ launch_with() {
 
 launch_with catalog catalog
 launch_with playground playground
-launch_with wallet catalog wallet
+launch_with about about
+launch_with wallet catalog earned
 launch_with ticker catalog ticker
-launch_with field catalog field
-launch_with reflow catalog reflow
-launch_with hero catalog wallet
+launch_with field catalog amount
+launch_with reflow catalog resize
+launch_with hero catalog earned
 
 xcrun simctl terminate booted "$APP" 2>/dev/null || true
