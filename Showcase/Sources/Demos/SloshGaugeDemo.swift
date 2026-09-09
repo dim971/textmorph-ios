@@ -21,7 +21,7 @@ struct SloshGaugeDemo: View {
                 // The liquid, filling from the bottom.
                 VStack(spacing: 0) {
                     Spacer(minLength: 0)
-                    Color.accentColor.frame(height: tankHeight * level)
+                    settings.tint.colour.frame(height: tankHeight * level)
                 }
                 // The value twice: once in the ink colour, and once in a dark
                 // one clipped to the liquid, so the digits under the surface
@@ -31,7 +31,7 @@ struct SloshGaugeDemo: View {
                     .textMorphFont(stageFont(size: 30))
                 TextMorph(value, options: settings.options)
                     .textMorphFont(stageFont(size: 30))
-                    .textMorphColour(.black.opacity(0.85))
+                    .textMorphColour(onTint(settings.tint.colour))
                     .mask(alignment: .bottom) {
                         Color.black.frame(height: tankHeight * level)
                     }

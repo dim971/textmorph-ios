@@ -46,7 +46,7 @@ struct ChartDemo: View {
                         RoundedRectangle(cornerRadius: 3)
                             .fill(
                                 index == month
-                                    ? Color.accentColor
+                                    ? settings.tint.colour
                                     : Color(uiColor: .tertiarySystemFill)
                             )
                             .frame(height: barHeight * share)

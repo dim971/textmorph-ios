@@ -41,7 +41,7 @@ struct RangeShoveDemo: View {
         AnyView(
             TextMorph("$\(value)", options: settings.options)
                 .textMorphFont(stageFont(size: 20))
-                .textMorphColour(.black.opacity(0.9))
+                .textMorphColour(onTint(settings.tint.colour))
         )
     }
 

@@ -18,8 +18,8 @@ struct SplitBarDemo: View {
             HStack(spacing: 0) {
                 half(
                     text: "$\(grouped(left))",
-                    fill: Color.accentColor,
-                    ink: Color.black.opacity(0.85)
+                    fill: settings.tint.colour,
+                    ink: onTint(settings.tint.colour)
                 )
                 .frame(maxWidth: .infinity)
                 .layoutPriority(max(0.08, min(0.92, share)))

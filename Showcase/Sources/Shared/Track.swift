@@ -19,12 +19,14 @@ private let trackHeight = 4.0
 /// Where the track sits under the bubbles.
 private let trackTop = 62.0
 
-/// Where a tail tip sits: the top of the thumb rather than its centre.
+/// Where a tail tip sits.
 ///
-/// On the centre the thumb covers the tail entirely and the pill reads as a
-/// plain pill with a notch bitten out of it. Three points of overlap is enough
-/// to look attached without being swallowed.
-private let pillBottom = trackTop + trackHeight / 2 - thumbSize / 2 + 3
+/// Upstream spells this out in its stylesheet: nine points of tail, then the
+/// thumb's nine points of radius, then two points of daylight. So the tip stops
+/// just short of the thumb rather than resting on it, and certainly rather than
+/// behind it: centred on the thumb, a disc covers the tail completely and the
+/// pill reads as a plain pill with a notch bitten out.
+private let pillBottom = trackTop + trackHeight / 2 - thumbSize / 2 - 2
 
 /// The state one tick of the physics writes, and the layout reads. All in points.
 @Observable
@@ -153,6 +155,7 @@ struct RangeTrack: View {
     let bubbles: [AnyView]
 
     @State private var motion: TrackMotion
+    @Environment(ShowcaseSettings.self) private var settings
 
     /// Which thumb the drag in progress belongs to.
     @State private var held: Int?
@@ -173,6 +176,8 @@ struct RangeTrack: View {
     }
 
     private var span: Double { trackWidth - thumbSize }
+
+    private var tint: Color { bubbleColour ?? settings.tint.colour }
 
     private func thumbAt(_ fraction: Double) -> Double {
         thumbSize / 2 + span * min(max(fraction, 0), 1)
@@ -241,7 +246,9 @@ struct RangeTrack: View {
 
     private var fill: some View {
         Capsule()
-            .fill(Color.accentColor)
+            // The filled part of the track takes the tint too, which is
+            // upstream: its fill is the same `--primary` as its bubble.
+            .fill(tint)
             .frame(
                 width: span * min(max(fractions.last! - from, 0), 1),
                 height: trackHeight
@@ -275,7 +282,7 @@ struct RangeTrack: View {
             .padding(.horizontal, 10)
             .padding(.top, 4)
             .padding(.bottom, 4 + bubbleTail)
-            .background(bubbleColour ?? Color.accentColor, in: BubbleShape())
+            .background(tint, in: BubbleShape())
             .background {
                 GeometryReader { geometry in
                     Color.clear.task(id: geometry.size) {

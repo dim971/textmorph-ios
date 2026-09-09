@@ -19,7 +19,7 @@ struct ActionDemo: View {
                         } else {
                             Image(systemName: "checkmark.circle.fill")
                                 .font(.system(size: 20))
-                                .foregroundStyle(Color.accentColor)
+                                .foregroundStyle(settings.tint.colour)
                         }
                         TextMorph(
                             actionStates[index],

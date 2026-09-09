@@ -44,10 +44,10 @@ struct TrailingTagDemo: View {
                 // in order, and a tap takes it over.
                 TextMorph(zones[zone], options: settings.options)
                     .textMorphFont(stageFont(size: 15))
-                    .textMorphColour(.black.opacity(0.9))
+                    .textMorphColour(onTint(settings.tint.colour))
                     .padding(.horizontal, 10)
                     .padding(.vertical, 5)
-                    .background(Color.accentColor, in: .rect(cornerRadius: 8))
+                    .background(settings.tint.colour, in: .rect(cornerRadius: 8))
                     .frame(width: cellWidth, height: cellHeight)
                     .offset(
                         x: cellWidth * Double(zone % columns),

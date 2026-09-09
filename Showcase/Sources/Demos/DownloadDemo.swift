@@ -29,7 +29,7 @@ struct DownloadDemo: View {
                     .fill(Color(uiColor: .tertiarySystemFill))
                     .frame(width: barWidth, height: 6)
                 Capsule()
-                    .fill(Color.accentColor)
+                    .fill(settings.tint.colour)
                     .frame(width: barWidth * max(0, min(1, progress)), height: 6)
             }
         }

@@ -28,7 +28,7 @@ struct BubbleSliderDemo: View {
             ) {
                 TextMorph("\(Int((fraction * 100).rounded()))%", options: settings.options)
                     .textMorphFont(stageFont(size: 20))
-                    .textMorphColour(.black.opacity(0.9))
+                    .textMorphColour(onTint(settings.tint.colour))
             }
             // Autoplay eases to the next preset, so the pill is carried by the
             // travel and the digits roll on the way. Keyed on the preset rather

@@ -32,7 +32,7 @@ struct RatingSliderDemo: View {
             ) {
                 TextMorph(word, options: settings.options)
                     .textMorphFont(stageFont(size: 20))
-                    .textMorphColour(.black.opacity(0.9))
+                    .textMorphColour(onTint(tone))
             }
             .animation(.easeOut(duration: 0.3), value: index)
         }

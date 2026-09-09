@@ -18,6 +18,13 @@ final class ShowcaseSettings {
     var debug = false
     var disabled = false
 
+    /// The colour the tinted cards are drawn in.
+    ///
+    /// Global rather than per card, so changing it in the playground changes
+    /// the whole catalogue, which is the same argument the other switches make.
+    /// The ink on it is not a second setting: it follows from the tint.
+    var tint = ShowcaseTint.amber
+
     /// The options as the library takes them.
     var options: TextMorphOptions {
         TextMorphOptions(

@@ -14,6 +14,7 @@ struct PlaygroundScreen: View {
         NavigationStack {
             Form {
                 sample
+                tint
                 motion
                 whatMorphs
                 inspecting
@@ -31,6 +32,42 @@ struct PlaygroundScreen: View {
             } advance: {
                 cycle.advance()
             }
+        }
+    }
+
+    /// The tint the tinted cards are drawn in.
+    ///
+    /// Six of upstream's own colours, and the letter on each swatch is drawn in
+    /// the ink that swatch chose, so the rule is visible on the control itself
+    /// rather than only in the cards it changes.
+    private var tint: some View {
+        Section {
+            HStack(spacing: 8) {
+                ForEach(ShowcaseTint.allCases) { choice in
+                    Text("A")
+                        .font(.callout.weight(.semibold))
+                        .foregroundStyle(choice.ink)
+                        .frame(width: 34, height: 34)
+                        .background(choice.colour, in: .rect(cornerRadius: 8))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 8)
+                                .strokeBorder(
+                                    Color.primary,
+                                    lineWidth: choice == settings.tint ? 2 : 0
+                                )
+                        }
+                        .onTapGesture { settings.tint = choice }
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        } header: {
+            Text("Tint")
+        } footer: {
+            Text("\(settings.tint.label), with "
+                + (settings.tint.ink == .black ? "black" : "white")
+                + " on it. The ink is not a second choice: it is whichever of black and white "
+                + "the tint can be read through, by luminance, so a dark tint takes white "
+                + "without anyone deciding.")
         }
     }
 

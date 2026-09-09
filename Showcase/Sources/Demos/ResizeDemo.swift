@@ -44,7 +44,7 @@ struct ResizeDemo: View {
                 // which is upstream's rule everywhere: a demo hands over rather
                 // than fighting the finger.
                 Capsule()
-                    .fill(Color.accentColor)
+                    .fill(settings.tint.colour)
                     .frame(width: 10, height: 44)
                     .contentShape(.rect)
                     .gesture(handle, including: live ? .all : .none)
